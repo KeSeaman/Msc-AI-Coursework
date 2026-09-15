@@ -1,0 +1,1222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Building a Culturally Grounded Dataset for AI Mental Health Intervention in East Africa — a blog post by Kinyua Seaman on dataset development for culturally adaptive AI.">
+  <title>Building a Culturally Grounded Dataset for AI Mental Health Intervention | Kinyua Seaman</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <style>
+    /* ─────────────────── DESIGN TOKENS ─────────────────── */
+    :root {
+      /* Primary palette — warm ochre-teal inspired by East African landscape */
+      --clr-bg-deep: #0a0c10;
+      --clr-bg-surface: #12151c;
+      --clr-bg-card: #191d27;
+      --clr-bg-elevated: #1f2433;
+
+      --clr-accent-primary: #e8a838;      /* Warm gold/ochre */
+      --clr-accent-secondary: #2ec4b6;    /* Teal */
+      --clr-accent-tertiary: #c77dba;     /* Soft violet */
+      --clr-accent-danger: #e06c75;       /* Muted red */
+
+      --clr-text-primary: #e8eaf0;
+      --clr-text-secondary: #9ba1b5;
+      --clr-text-muted: #5c6378;
+      --clr-border: rgba(255,255,255,0.06);
+
+      /* Gradients */
+      --grad-hero: linear-gradient(135deg, #e8a838 0%, #c77dba 50%, #2ec4b6 100%);
+      --grad-card-border: linear-gradient(135deg, rgba(232,168,56,0.3), rgba(46,196,182,0.1));
+      --grad-glow: radial-gradient(circle at 50% 0%, rgba(232,168,56,0.12) 0%, transparent 60%);
+
+      /* Typography */
+      --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-display: 'Playfair Display', Georgia, serif;
+      --font-mono: 'JetBrains Mono', monospace;
+
+      /* Spacing */
+      --content-width: 760px;
+      --section-gap: 5rem;
+    }
+
+    /* ─────────────────── RESET ─────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; scroll-padding-top: 80px; }
+    body {
+      font-family: var(--font-body);
+      background: var(--clr-bg-deep);
+      color: var(--clr-text-primary);
+      line-height: 1.85;
+      font-size: 17px;
+      font-weight: 400;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* ─────────────────── READING PROGRESS BAR ─────────────────── */
+    #progress-bar {
+      position: fixed;
+      top: 0; left: 0;
+      width: 0%;
+      height: 3px;
+      background: var(--grad-hero);
+      z-index: 9999;
+      transition: width 0.1s linear;
+      box-shadow: 0 0 12px rgba(232,168,56,0.5);
+    }
+
+    /* ─────────────────── NAVIGATION ─────────────────── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 1000;
+      padding: 0 2rem;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(10,12,16,0.75);
+      backdrop-filter: blur(20px) saturate(1.6);
+      -webkit-backdrop-filter: blur(20px) saturate(1.6);
+      border-bottom: 1px solid var(--clr-border);
+      transition: transform 0.35s ease, box-shadow 0.35s ease;
+    }
+    nav.scrolled {
+      box-shadow: 0 4px 30px rgba(0,0,0,0.4);
+    }
+    .nav-brand {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 1.15rem;
+      background: var(--grad-hero);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: -0.02em;
+    }
+    .nav-links {
+      list-style: none;
+      display: flex;
+      gap: 1.8rem;
+    }
+    .nav-links a {
+      color: var(--clr-text-secondary);
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      transition: color 0.25s ease;
+      position: relative;
+    }
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -4px; left: 0;
+      width: 0; height: 2px;
+      background: var(--clr-accent-primary);
+      transition: width 0.3s ease;
+    }
+    .nav-links a:hover { color: var(--clr-accent-primary); }
+    .nav-links a:hover::after { width: 100%; }
+
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+    }
+
+    /* ─────────────────── HERO ─────────────────── */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 6rem 2rem 4rem;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 60% 50% at 30% 20%, rgba(232,168,56,0.08) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 40% at 70% 60%, rgba(46,196,182,0.06) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 30% at 50% 80%, rgba(199,125,186,0.05) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-content {
+      position: relative;
+      max-width: 900px;
+    }
+    .hero-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.45rem 1.2rem;
+      border-radius: 100px;
+      background: rgba(232,168,56,0.1);
+      border: 1px solid rgba(232,168,56,0.2);
+      color: var(--clr-accent-primary);
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 2rem;
+      animation: fadeSlideUp 0.8s ease both;
+    }
+    .hero-tag .dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--clr-accent-primary);
+      animation: pulse 2s ease infinite;
+    }
+    .hero h1 {
+      font-family: var(--font-display);
+      font-size: clamp(2.4rem, 5vw, 4rem);
+      font-weight: 800;
+      line-height: 1.15;
+      letter-spacing: -0.03em;
+      margin-bottom: 1.5rem;
+      animation: fadeSlideUp 0.8s 0.15s ease both;
+    }
+    .hero h1 .gradient-text {
+      background: var(--grad-hero);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-subtitle {
+      font-size: 1.15rem;
+      color: var(--clr-text-secondary);
+      max-width: 620px;
+      margin: 0 auto 2.5rem;
+      line-height: 1.75;
+      animation: fadeSlideUp 0.8s 0.3s ease both;
+    }
+    .hero-meta {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+      animation: fadeSlideUp 0.8s 0.45s ease both;
+    }
+    .hero-meta-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.85rem;
+      color: var(--clr-text-muted);
+    }
+    .hero-meta-item svg {
+      width: 16px; height: 16px;
+      stroke: var(--clr-accent-secondary);
+    }
+    .hero-scroll-indicator {
+      position: absolute;
+      bottom: 2.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--clr-text-muted);
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      animation: fadeSlideUp 1s 0.8s ease both;
+    }
+    .scroll-line {
+      width: 1px; height: 40px;
+      background: linear-gradient(to bottom, var(--clr-accent-primary), transparent);
+      animation: scrollPulse 2s ease infinite;
+    }
+
+    /* ─────────────────── MAIN ARTICLE ─────────────────── */
+    .article-container {
+      max-width: var(--content-width);
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    /* Section blocks */
+    .blog-section {
+      margin-bottom: var(--section-gap);
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .blog-section.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Section headers */
+    .section-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+      padding: 0.35rem 0.9rem;
+      border-radius: 6px;
+    }
+    .section-label.gold { color: var(--clr-accent-primary); background: rgba(232,168,56,0.08); }
+    .section-label.teal { color: var(--clr-accent-secondary); background: rgba(46,196,182,0.08); }
+    .section-label.violet { color: var(--clr-accent-tertiary); background: rgba(199,125,186,0.08); }
+    .section-label.red { color: var(--clr-accent-danger); background: rgba(224,108,117,0.08); }
+
+    .section-number {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      color: var(--clr-text-muted);
+    }
+
+    h2 {
+      font-family: var(--font-display);
+      font-size: clamp(1.7rem, 3.5vw, 2.4rem);
+      font-weight: 700;
+      line-height: 1.25;
+      letter-spacing: -0.02em;
+      margin-bottom: 1.5rem;
+    }
+
+    h3 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin: 2.5rem 0 1rem;
+      color: var(--clr-text-primary);
+    }
+
+    p {
+      margin-bottom: 1.5rem;
+      color: var(--clr-text-secondary);
+    }
+
+    strong {
+      color: var(--clr-text-primary);
+      font-weight: 600;
+    }
+
+    em {
+      font-style: italic;
+      color: var(--clr-accent-secondary);
+    }
+
+    a {
+      color: var(--clr-accent-primary);
+      text-decoration: none;
+      border-bottom: 1px solid rgba(232,168,56,0.3);
+      transition: border-color 0.25s ease;
+    }
+    a:hover {
+      border-color: var(--clr-accent-primary);
+    }
+
+    /* ─────────────────── CALLOUT / HIGHLIGHT CARDS ─────────────────── */
+    .callout {
+      position: relative;
+      padding: 1.8rem 2rem;
+      margin: 2rem 0;
+      border-radius: 12px;
+      background: var(--clr-bg-card);
+      border: 1px solid var(--clr-border);
+      overflow: hidden;
+    }
+    .callout::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 4px; height: 100%;
+    }
+    .callout.gold::before { background: var(--clr-accent-primary); }
+    .callout.teal::before { background: var(--clr-accent-secondary); }
+    .callout.violet::before { background: var(--clr-accent-tertiary); }
+    .callout.red::before { background: var(--clr-accent-danger); }
+
+    .callout .callout-title {
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 0.7rem;
+    }
+    .callout.gold .callout-title { color: var(--clr-accent-primary); }
+    .callout.teal .callout-title { color: var(--clr-accent-secondary); }
+    .callout.violet .callout-title { color: var(--clr-accent-tertiary); }
+    .callout.red .callout-title { color: var(--clr-accent-danger); }
+
+    .callout p { margin-bottom: 0; font-size: 0.95rem; }
+
+    /* ─────────────────── QUOTE BLOCK ─────────────────── */
+    blockquote {
+      position: relative;
+      margin: 2.5rem 0;
+      padding: 2rem 2.5rem;
+      background: linear-gradient(135deg, rgba(232,168,56,0.04), rgba(46,196,182,0.03));
+      border-radius: 12px;
+      border: 1px solid rgba(232,168,56,0.1);
+    }
+    blockquote::before {
+      content: '\201C';
+      position: absolute;
+      top: -0.2rem; left: 1rem;
+      font-size: 4rem;
+      font-family: var(--font-display);
+      color: rgba(232,168,56,0.2);
+      line-height: 1;
+    }
+    blockquote p {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: 1.15rem;
+      color: var(--clr-text-primary);
+      line-height: 1.7;
+      margin-bottom: 0.7rem;
+    }
+    blockquote cite {
+      font-family: var(--font-body);
+      font-style: normal;
+      font-size: 0.82rem;
+      color: var(--clr-text-muted);
+    }
+
+    /* ─────────────────── LIST STYLES ─────────────────── */
+    ul, ol {
+      margin: 1.2rem 0 1.8rem 1.2rem;
+      color: var(--clr-text-secondary);
+    }
+    li {
+      margin-bottom: 0.7rem;
+      padding-left: 0.4rem;
+    }
+    li::marker {
+      color: var(--clr-accent-primary);
+    }
+
+    /* ─────────────────── STAT CARDS ─────────────────── */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.2rem;
+      margin: 2rem 0;
+    }
+    .stat-card {
+      background: var(--clr-bg-card);
+      border: 1px solid var(--clr-border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      text-align: center;
+      transition: transform 0.3s ease, border-color 0.3s ease;
+    }
+    .stat-card:hover {
+      transform: translateY(-3px);
+      border-color: rgba(232,168,56,0.2);
+    }
+    .stat-value {
+      font-family: var(--font-display);
+      font-size: 2rem;
+      font-weight: 800;
+      background: var(--grad-hero);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.3rem;
+    }
+    .stat-label {
+      font-size: 0.78rem;
+      color: var(--clr-text-muted);
+      font-weight: 500;
+      letter-spacing: 0.04em;
+    }
+
+    /* ─────────────────── PIPELINE DIAGRAM ─────────────────── */
+    .pipeline {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      margin: 2.5rem 0;
+    }
+    .pipeline-step {
+      display: flex;
+      align-items: flex-start;
+      gap: 1.5rem;
+      position: relative;
+    }
+    .pipeline-connector {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex-shrink: 0;
+      width: 40px;
+    }
+    .pipeline-dot {
+      width: 14px; height: 14px;
+      border-radius: 50%;
+      border: 3px solid;
+      background: var(--clr-bg-deep);
+      flex-shrink: 0;
+      position: relative;
+      z-index: 1;
+    }
+    .pipeline-line {
+      width: 2px;
+      flex: 1;
+      min-height: 40px;
+    }
+    .pipeline-step:nth-child(1) .pipeline-dot { border-color: var(--clr-accent-primary); }
+    .pipeline-step:nth-child(1) .pipeline-line { background: linear-gradient(to bottom, var(--clr-accent-primary), var(--clr-accent-secondary)); }
+    .pipeline-step:nth-child(2) .pipeline-dot { border-color: var(--clr-accent-secondary); }
+    .pipeline-step:nth-child(2) .pipeline-line { background: linear-gradient(to bottom, var(--clr-accent-secondary), var(--clr-accent-tertiary)); }
+    .pipeline-step:nth-child(3) .pipeline-dot { border-color: var(--clr-accent-tertiary); }
+    .pipeline-step:nth-child(3) .pipeline-line { background: linear-gradient(to bottom, var(--clr-accent-tertiary), var(--clr-accent-danger)); }
+    .pipeline-step:nth-child(4) .pipeline-dot { border-color: var(--clr-accent-danger); }
+
+    .pipeline-body {
+      padding-bottom: 2rem;
+    }
+    .pipeline-body h4 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      color: var(--clr-text-primary);
+    }
+    .pipeline-body p {
+      font-size: 0.92rem;
+      margin-bottom: 0;
+    }
+
+    /* ─────────────────── TABLE OF CONTENTS (FLOATING) ─────────────────── */
+    .toc-sidebar {
+      position: fixed;
+      top: 50%;
+      right: 2rem;
+      transform: translateY(-50%);
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .toc-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: var(--clr-text-muted);
+      opacity: 0.3;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      position: relative;
+    }
+    .toc-dot.active {
+      opacity: 1;
+      background: var(--clr-accent-primary);
+      box-shadow: 0 0 8px rgba(232,168,56,0.5);
+      transform: scale(1.3);
+    }
+    .toc-dot:hover {
+      opacity: 0.7;
+    }
+    .toc-dot::after {
+      content: attr(data-label);
+      position: absolute;
+      right: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 0.7rem;
+      color: var(--clr-text-secondary);
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+      background: var(--clr-bg-elevated);
+      padding: 0.3rem 0.7rem;
+      border-radius: 6px;
+      border: 1px solid var(--clr-border);
+    }
+    .toc-dot:hover::after {
+      opacity: 1;
+    }
+
+    @media (max-width: 1200px) {
+      .toc-sidebar { display: none; }
+    }
+
+    /* ─────────────────── DIVIDER ─────────────────── */
+    .section-divider {
+      width: 60px; height: 3px;
+      background: var(--grad-hero);
+      border-radius: 2px;
+      margin: var(--section-gap) auto;
+      opacity: 0.5;
+    }
+
+    /* ─────────────────── FOOTER ─────────────────── */
+    footer {
+      margin-top: 6rem;
+      padding: 3rem 2rem;
+      text-align: center;
+      border-top: 1px solid var(--clr-border);
+      background: var(--clr-bg-surface);
+    }
+    footer p {
+      font-size: 0.82rem;
+      color: var(--clr-text-muted);
+      margin-bottom: 0.5rem;
+    }
+    footer .footer-brand {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 1rem;
+      background: var(--grad-hero);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 1rem;
+      display: inline-block;
+    }
+
+    /* ─────────────────── IMAGE PLACEHOLDER ─────────────────── */
+    .blog-image {
+      width: 100%;
+      border-radius: 16px;
+      margin: 2rem 0;
+      border: 1px solid var(--clr-border);
+      overflow: hidden;
+      position: relative;
+    }
+    .blog-image img {
+      width: 100%;
+      display: block;
+    }
+    .blog-image .image-caption {
+      padding: 0.8rem 1.2rem;
+      font-size: 0.8rem;
+      color: var(--clr-text-muted);
+      background: var(--clr-bg-card);
+      font-style: italic;
+    }
+
+    /* ─────────────────── SWAHILI IDIOM CARDS ─────────────────── */
+    .idiom-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+      margin: 2rem 0;
+    }
+    .idiom-card {
+      background: var(--clr-bg-card);
+      border: 1px solid var(--clr-border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .idiom-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+    }
+    .idiom-word {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: 1.2rem;
+      color: var(--clr-accent-primary);
+      margin-bottom: 0.4rem;
+    }
+    .idiom-meaning {
+      font-size: 0.85rem;
+      color: var(--clr-text-secondary);
+      margin-bottom: 0;
+    }
+
+    /* ─────────────────── TAG PILLS ─────────────────── */
+    .tag-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin: 1.5rem 0;
+      list-style: none;
+      padding: 0;
+    }
+    .tag-list li {
+      padding: 0.3rem 0.85rem;
+      border-radius: 100px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      border: 1px solid;
+      margin-bottom: 0;
+    }
+    .tag-list li.gold { color: var(--clr-accent-primary); border-color: rgba(232,168,56,0.25); background: rgba(232,168,56,0.06); }
+    .tag-list li.teal { color: var(--clr-accent-secondary); border-color: rgba(46,196,182,0.25); background: rgba(46,196,182,0.06); }
+    .tag-list li.violet { color: var(--clr-accent-tertiary); border-color: rgba(199,125,186,0.25); background: rgba(199,125,186,0.06); }
+
+    /* ─────────────────── ANIMATIONS ─────────────────── */
+    @keyframes fadeSlideUp {
+      from { opacity: 0; transform: translateY(25px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(1.5); }
+    }
+    @keyframes scrollPulse {
+      0%, 100% { opacity: 0.3; transform: scaleY(1); }
+      50% { opacity: 1; transform: scaleY(1.15); }
+    }
+
+    /* ─────────────────── RESPONSIVE ─────────────────── */
+    @media (max-width: 600px) {
+      body { font-size: 15px; }
+      .hero { min-height: 90vh; padding: 5rem 1.2rem 3rem; }
+      .article-container { padding: 0 1.2rem; }
+      .callout { padding: 1.3rem 1.2rem; }
+      blockquote { padding: 1.5rem; }
+      .stats-grid { grid-template-columns: 1fr 1fr; }
+      .hero-meta { gap: 1rem; }
+    }
+  </style>
+</head>
+
+<body>
+
+<!-- Reading Progress Bar -->
+<div id="progress-bar"></div>
+
+<!-- Navigation -->
+<nav id="main-nav">
+  <span class="nav-brand">Kinyua Seaman</span>
+  <ul class="nav-links">
+    <li><a href="#why-datasets">Datasets</a></li>
+    <li><a href="#our-dataset">Our Dataset</a></li>
+    <li><a href="#collection">Collection</a></li>
+    <li><a href="#challenges">Challenges</a></li>
+    <li><a href="#community">Community</a></li>
+    <li><a href="#ethics">Ethics</a></li>
+  </ul>
+</nav>
+
+<!-- Floating Table of Contents (dots) -->
+<aside class="toc-sidebar" id="toc-sidebar">
+  <div class="toc-dot" data-label="Why Datasets Matter" data-target="why-datasets"></div>
+  <div class="toc-dot" data-label="Our Dataset" data-target="our-dataset"></div>
+  <div class="toc-dot" data-label="Data Collection" data-target="collection"></div>
+  <div class="toc-dot" data-label="Challenges" data-target="challenges"></div>
+  <div class="toc-dot" data-label="Community" data-target="community"></div>
+  <div class="toc-dot" data-label="Ethics" data-target="ethics"></div>
+</aside>
+
+<!-- ═══════════════════ HERO ═══════════════════ -->
+<header class="hero">
+  <div class="hero-content">
+    <span class="hero-tag"><span class="dot"></span> MSc in Artificial Intelligence — JKUAT</span>
+
+    <h1>
+      Building a <span class="gradient-text">Culturally Grounded Dataset</span> for AI Mental Health Intervention
+    </h1>
+
+    <p class="hero-subtitle">
+      How we are documenting East African idioms of distress, communal coping strategies, and culturally resonant metaphors to teach an AI system to truly understand loneliness in Kenya.
+    </p>
+
+    <div class="hero-meta">
+      <span class="hero-meta-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+        14 min read
+      </span>
+      <span class="hero-meta-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+        13 June 2026
+      </span>
+      <span class="hero-meta-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        Kinyua Seaman
+      </span>
+    </div>
+  </div>
+
+  <div class="hero-scroll-indicator">
+    <span>Scroll to explore</span>
+    <div class="scroll-line"></div>
+  </div>
+</header>
+
+
+<!-- ═══════════════════ ARTICLE BODY ═══════════════════ -->
+<main class="article-container">
+
+  <!-- ── INTRODUCTION ── -->
+  <section class="blog-section" id="introduction">
+    <p>
+      When I began my Master's research at Jomo Kenyatta University of Agriculture and Technology, I carried a question that had followed me for years: <strong>Why does every mental health chatbot I have ever tried feel like it was designed for someone else?</strong> Someone in San Francisco, perhaps, or London — but certainly not someone in Nairobi.
+    </p>
+    <p>
+      That dissonance is not an interface bug. It is a dataset problem. The models powering these tools were trained on overwhelmingly Western, English-language, and individualistic data. When a user in Kibera describes <em>kufikiria sana</em> — "thinking too much" — the model reads anxiety. It does not see what the phrase actually encodes: a fracture in communal belonging, a signal that relationships have broken down. The therapeutic response it generates, therefore, is clinically plausible but culturally deaf.
+    </p>
+    <p>
+      This blog is my ongoing account of building the dataset that will change that. It documents the cultural knowledge base at the heart of my research project: <strong>A Causal Evaluation of Culturally Adaptive AI as Relational Scaffolding for Loneliness Intervention.</strong>
+    </p>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ── SECTION 1: WHY DATASETS MATTER ── -->
+  <section class="blog-section" id="why-datasets">
+    <span class="section-label gold"><span class="section-number">01</span> Foundation</span>
+    <h2>Why Datasets Are the Bedrock of AI Research</h2>
+
+    <p>
+      There is a deceptively simple truth in machine learning: <strong>a model is only as good as the data it learns from.</strong> You can have the most sophisticated architecture ever published, but if you feed it biased, incomplete, or culturally homogeneous data, you reproduce bias at scale. This is especially dangerous in mental health AI, where a wrong interpretation can cause real harm to real people.
+    </p>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-value">90%+</div>
+        <div class="stat-label">of NLP training data is English</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">&lt;2%</div>
+        <div class="stat-label">represents Sub-Saharan African contexts</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">185K+</div>
+        <div class="stat-label">Kenyan youth reached by Shamiri Institute</div>
+      </div>
+    </div>
+
+    <p>
+      Systematic reviews of conversational agents for mental health have found widespread reliance on Western-developed scales, minimal cultural adaptation, and weak links between automated performance metrics and actual user well-being. When researchers at Aalto University studied AI companion usage longitudinally, they discovered a troubling paradox: the AI provided unconditional support that attracted lonely individuals, but extended use eroded well-being and impaired the capacity to navigate real-world relationships. The problem is not that AI cannot help — it is that <strong>the wrong data produces the wrong kind of help.</strong>
+    </p>
+
+    <div class="callout gold">
+      <div class="callout-title">💡 Key Insight</div>
+      <p>
+        Datasets do not just train models — they encode worldviews. A dataset built exclusively from Western clinical literature embeds a Western worldview into every generated response. Creating culturally grounded datasets is therefore not a nicety; it is an ethical imperative for any AI system that will touch human lives in non-Western contexts.
+      </p>
+    </div>
+
+    <p>
+      Three properties make a mental health dataset genuinely useful in our context:
+    </p>
+    <ol>
+      <li><strong>Cultural validity</strong> — it must capture how distress is actually expressed in the target community, not how Western textbooks say it should be expressed.</li>
+      <li><strong>Relational orientation</strong> — it must encode the communal, rather than purely individual, nature of emotional suffering.</li>
+      <li><strong>Therapeutic grounding</strong> — it must connect cultural expressions to evidence-based interventions, not just translate words.</li>
+    </ol>
+
+    <p>These are the principles driving every decision in our dataset construction.</p>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ── SECTION 2: THE DATASET WE ARE BUILDING ── -->
+  <section class="blog-section" id="our-dataset">
+    <span class="section-label teal"><span class="section-number">02</span> The Dataset</span>
+    <h2>What We Are Building: A Dual-Track Cultural Knowledge Base</h2>
+
+    <p>
+      Our research system uses a Retrieval-Augmented Generation (RAG) architecture — meaning the AI does not rely solely on its pre-trained weights to generate responses. Instead, it actively retrieves relevant knowledge from curated repositories before formulating each reply. The quality of those repositories is the entire game.
+    </p>
+
+    <p>We are constructing <strong>two parallel knowledge tracks</strong>:</p>
+
+    <div class="pipeline">
+      <div class="pipeline-step">
+        <div class="pipeline-connector">
+          <div class="pipeline-dot"></div>
+          <div class="pipeline-line"></div>
+        </div>
+        <div class="pipeline-body">
+          <h4>Track A — Clinical Grounding Repository</h4>
+          <p>
+            A curated collection of Cognitive Behavioural Therapy (CBT) protocols, behavioural activation strategies, and psycho-educational materials validated specifically for adolescent populations. This includes cognitive restructuring frameworks, activity scheduling templates, and graduated exposure hierarchies.
+          </p>
+        </div>
+      </div>
+
+      <div class="pipeline-step">
+        <div class="pipeline-connector">
+          <div class="pipeline-dot"></div>
+          <div class="pipeline-line"></div>
+        </div>
+        <div class="pipeline-body">
+          <h4>Track B — Cultural Translation Repository</h4>
+          <p>
+            The heart of our unique contribution. This knowledge base contains East African idioms of distress, culturally resonant metaphors, communal coping strategies, and validated cultural responses. It draws from published ethnographic research, clinical expertise from local mental health practitioners, and community-based participatory design.
+          </p>
+        </div>
+      </div>
+
+      <div class="pipeline-step">
+        <div class="pipeline-connector">
+          <div class="pipeline-dot"></div>
+          <div class="pipeline-line"></div>
+        </div>
+        <div class="pipeline-body">
+          <h4>Fusion & Contextualisation Module</h4>
+          <p>
+            Both tracks feed into a fusion module that combines clinical strategy with cultural framing into a unified prompt context. The system does not simply translate English therapy into Swahili — it reformulates the therapeutic intent through culturally resonant metaphors and communal language registers.
+          </p>
+        </div>
+      </div>
+
+      <div class="pipeline-step">
+        <div class="pipeline-connector">
+          <div class="pipeline-dot"></div>
+        </div>
+        <div class="pipeline-body">
+          <h4>Generative Formulation Layer</h4>
+          <p>
+            The fused context drives GPT-4o generation under strict constraints: act as temporary scaffolding (not a synthetic companion), use Swahili-English code-switching where appropriate, and always end with an action for real-world community re-engagement.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <h3>Sample Entries from the Cultural Knowledge Base</h3>
+
+    <p>
+      To give a concrete sense of what this data looks like, here are some of the Swahili idioms of distress we are documenting:
+    </p>
+
+    <div class="idiom-grid">
+      <div class="idiom-card">
+        <div class="idiom-word">Kufikiria sana</div>
+        <p class="idiom-meaning">"Thinking too much" — signals communal disruption and relational anxiety, not merely clinical worry.</p>
+      </div>
+      <div class="idiom-card">
+        <div class="idiom-word">Kufa moyo</div>
+        <p class="idiom-meaning">"Death of the heart" — deep hopelessness and loss of will, tied to social disconnection.</p>
+      </div>
+      <div class="idiom-card">
+        <div class="idiom-word">Ipo siku</div>
+        <p class="idiom-meaning">"There will come a day" — a communal coping mechanism expressing resilience through future-oriented hope.</p>
+      </div>
+    </div>
+
+    <p>
+      Each entry in our cultural knowledge base includes the idiom itself, its communal context, situations where it is typically used, how it maps to Western diagnostic categories (and where the mapping breaks down), and culturally appropriate therapeutic responses. We also document colloquial terms like <em>"Njaanuary"</em> — the January financial squeeze that many Kenyans experience — because economic hardship is deeply intertwined with loneliness and mental distress in our context.
+    </p>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ── SECTION 3: DATA COLLECTION ── -->
+  <section class="blog-section" id="collection">
+    <span class="section-label violet"><span class="section-number">03</span> Methodology</span>
+    <h2>Data Collection Approaches</h2>
+
+    <p>
+      Building a cultural knowledge base is fundamentally different from scraping Reddit threads or downloading PubMed abstracts. The data we need lives in communities, in lived experience, in the spaces between languages. Our collection strategy uses four complementary approaches:
+    </p>
+
+    <h3>1. Published Ethnographic Literature</h3>
+    <p>
+      Our foundational layer draws from peer-reviewed ethnographic research on East African idioms of distress. Mendenhall and colleagues' analysis of 100 life-history narrative interviews at a public hospital in Nairobi provides rich documentation of how <em>kufikiria sana</em> functions as both a standalone expression and a marker of deeper psychological distress — an ethnopsychology that integrates traditional and biomedical frameworks.
+    </p>
+    <p>
+      We also incorporate network analysis research on Kenyan adolescents, which identifies loneliness as the most central psychological variable bridging depressive symptoms and diminished well-being, with gender-contingent pathways: family support proves more central for girls, while peer support plays a larger role for boys.
+    </p>
+
+    <h3>2. Clinical Expert Elicitation</h3>
+    <p>
+      Published literature provides the scaffolding, but the living knowledge lives with practitioners. We conduct structured interviews and iterative review sessions with local mental health professionals — clinical psychologists, counsellors, and community health workers — who encounter these idioms daily. They help us validate that our documented responses are not just academically correct but practically resonant.
+    </p>
+
+    <h3>3. Community-Based Participatory Design</h3>
+    <p>
+      Perhaps the most important data stream. We run participatory design workshops with youth representatives and community stakeholders. These sessions surface idioms and metaphors that do not appear in any published paper — the expressions people actually use in WhatsApp groups, in matatu conversations, in church youth meetings. This is where <em>"Njaanuary"</em> emerged as a data point. No ethnography textbook mentions it, but every Kenyan youth recognises it instantly.
+    </p>
+
+    <h3>4. Existing AI-Adapted Frameworks</h3>
+    <p>
+      We study and incorporate lessons from successful cultural adaptation projects elsewhere. Xie's doctoral work on dynamic cultural adaptation for Chinese American caregivers provides methodological templates. The Shamiri Institute's school-based intervention model — which has reached over 185,000 young people in Kenya — offers validated community engagement patterns. The Ubuntu-guided LLM framework for CBT demonstrates how an African philosophical concept can be operationalised as an AI system directive.
+    </p>
+
+    <div class="callout teal">
+      <div class="callout-title">🔬 Methodological Note</div>
+      <p>
+        Our data is not "big data" in the Silicon Valley sense. It is <strong>deep data</strong>: carefully curated, contextually rich, and community-validated. A single well-documented idiom of distress, with its full relational context, is worth more than a million scraped social media posts for our purposes.
+      </p>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ── SECTION 4: CHALLENGES ── -->
+  <section class="blog-section" id="challenges">
+    <span class="section-label red"><span class="section-number">04</span> Obstacles</span>
+    <h2>Challenges Encountered</h2>
+
+    <p>
+      I would be dishonest if I presented this work as smooth or straightforward. Building a cultural dataset for mental health AI is full of tensions that have no clean solutions — only careful navigation.
+    </p>
+
+    <h3>The Translation Problem Is Not a Translation Problem</h3>
+    <p>
+      The most persistent challenge is that cultural adaptation is <strong>not translation</strong>. You cannot take a CBT thought record, translate it into Swahili, and call it "culturally adapted." When we write about <em>kufikiria sana</em>, we are not documenting the Swahili word for "anxiety." We are documenting an entirely different conceptual structure — one where individual suffering and communal disruption are the same thing. Standard NLP approaches to multilingual datasets completely miss this distinction.
+    </p>
+
+    <h3>The Codification Paradox</h3>
+    <p>
+      Turning living cultural knowledge into structured data entries inevitably reduces its richness. An idiom that means different things in different neighbourhoods, to different age groups, between men and women — how do you encode that variability without either oversimplifying or creating a database so complex it becomes unusable? We are still iterating on our schema for this.
+    </p>
+
+    <h3>Navigating Clinical vs. Cultural Authority</h3>
+    <p>
+      There is an inherent tension between clinical evidence and cultural knowledge. CBT has a strong evidence base, but it was developed within a Western epistemological framework. Some culturally appropriate coping strategies — such as seeking guidance from community elders or framing distress through spiritual language — do not map neatly onto CBT frameworks. Our dataset must honour both without subordinating one to the other.
+    </p>
+
+    <h3>The Safety Boundary</h3>
+    <p>
+      Mental health data carries unique risks. Every data point we collect represents someone's pain. Our safety systems must detect severe distress and immediately bypass the AI's generative engine, routing users to human professionals. But <strong>what counts as "severe distress" is itself culturally variable</strong>. Western severity thresholds may trigger unnecessary escalations (causing users to distrust the system) or miss culturally-coded crisis signals. Calibrating these thresholds is ongoing work.
+    </p>
+
+    <h3>Resource and Infrastructure Constraints</h3>
+    <p>
+      Practically, we face the challenges common to African AI research: intermittent internet connectivity during remote fieldwork, limited access to GPU infrastructure for iterative model testing, and the sheer time cost of community-based participatory methods compared to automated data collection. Each participatory design workshop takes weeks to organise and generates data that requires hours of manual curation.
+    </p>
+
+    <blockquote>
+      <p>The hardest part of building this dataset is not technical. It is the constant negotiation between rigour and respect — between what the model needs to learn and what the community is comfortable teaching it.</p>
+      <cite>— Personal research journal, April 2026</cite>
+    </blockquote>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ── SECTION 5: COMMUNITY ENGAGEMENT ── -->
+  <section class="blog-section" id="community">
+    <span class="section-label teal"><span class="section-number">05</span> People</span>
+    <h2>Community Engagement and Stakeholder Involvement</h2>
+
+    <p>
+      If I have learned one thing so far, it is this: <strong>you cannot build a culturally adaptive AI from a lab.</strong> The entire premise of this research is that Western-trained models fail because they were built without the communities they claim to serve. We refuse to replicate that mistake.
+    </p>
+
+    <h3>Who Are Our Stakeholders?</h3>
+
+    <ul class="tag-list">
+      <li class="gold">Kenyan Youth (14–25)</li>
+      <li class="teal">Clinical Psychologists</li>
+      <li class="violet">Community Health Workers</li>
+      <li class="gold">University Counselling Services</li>
+      <li class="teal">Community Elders</li>
+      <li class="violet">Church Youth Leaders</li>
+      <li class="gold">Shamiri Institute</li>
+      <li class="teal">Mental Health NGOs</li>
+    </ul>
+
+    <h3>Participatory Design Workshops</h3>
+    <p>
+      These are our primary engagement mechanism. We do not survey our community — we design <em>with</em> them. Workshop participants review our documented idioms for accuracy, suggest missing expressions, critique the AI's draft responses, and help define the boundary between helpful and intrusive. Their feedback directly modifies the dataset.
+    </p>
+
+    <h3>Alignment with Existing Infrastructure</h3>
+    <p>
+      We are deliberately building on top of, rather than alongside, existing community mental health infrastructure. The Shamiri Institute has already established trust with communities across Kenya through school-based interventions delivered by trained peer providers. Our research complements this work by providing the AI layer that can extend reach beyond school hours, while always directing users back to human community resources.
+    </p>
+
+    <h3>The Relational Scaffolding Philosophy</h3>
+    <p>
+      Our system is designed as <strong>relational scaffolding</strong>, not a replacement companion. Every generated response is constrained by a system-level directive: it must end with an action that promotes real-world community engagement. This is not a feature — it is the entire design philosophy. The AI explicitly tells users it is temporary. It acknowledges its limitations. It pushes people toward their actual communities, not toward more screen time.
+    </p>
+
+    <div class="callout violet">
+      <div class="callout-title">🤝 Community-Centred Design</div>
+      <p>
+        We measure success not by engagement metrics (how long users spend with the AI) but by <strong>re-engagement metrics</strong>: how effectively users return to their physical communities. Our dataset encodes this philosophy at every level — from the coping strategies it documents to the conversational patterns it recommends.
+      </p>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ── SECTION 6: ETHICS ── -->
+  <section class="blog-section" id="ethics">
+    <span class="section-label red"><span class="section-number">06</span> Responsibility</span>
+    <h2>Ethical Considerations During Dataset Creation</h2>
+
+    <p>
+      Building a dataset that touches mental health, cultural identity, and vulnerable youth populations is an exercise in ethical complexity. Every design decision is simultaneously a moral decision.
+    </p>
+
+    <h3>Informed Consent and Institutional Oversight</h3>
+    <p>
+      Our research complies with JKUAT ethical review guidelines and NACOSTI (National Commission for Science, Technology and Innovation) regulations. All participants — and guardians for participants under 18 — provide written informed consent following full disclosure of the research purpose, procedures, risks, and benefits. No one is asked to share more than they are comfortable with.
+    </p>
+
+    <h3>Data Privacy and De-identification</h3>
+    <p>
+      All interactions will be de-identified, encrypted, and stored on secure servers compliant with Kenyan data protection laws. The cultural knowledge base itself contains generalised idioms and communal expressions — not individual stories. We are building a cultural knowledge system, not a database of personal disclosures.
+    </p>
+
+    <h3>The "Do No Harm" Imperative</h3>
+    <p>
+      In mental health AI, doing no harm requires more than passive compliance. It demands active safety systems. Our architecture includes:
+    </p>
+    <ul>
+      <li><strong>Azure AI Content Safety</strong> filtering on every input for toxicity, self-harm, and hate speech.</li>
+      <li><strong>Automatic clinical escalation</strong> — if the system detects severe distress, it immediately bypasses the generative engine and routes the user to human mental health professionals and crisis helplines.</li>
+      <li><strong>Licensed clinical oversight</strong> — a clinical psychologist monitors safety throughout the study.</li>
+      <li><strong>No denial of access</strong> — no participant is denied access to alternative mental health services at any point.</li>
+    </ul>
+
+    <h3>Avoiding Extractive Research</h3>
+    <p>
+      A critical ethical concern in African AI research is the extractive pattern: Western researchers (or Western-trained models) extract cultural knowledge, publish papers, and move on, leaving communities no better off. We are committed to avoiding this. Our dataset, codebase, and knowledge base will be released under an open-source licence upon completion. The communities that helped build this resource will benefit from it.
+    </p>
+
+    <h3>The Dependency Question</h3>
+    <p>
+      Perhaps the most subtle ethical consideration: <strong>is it ethical to build an AI tool that could itself create dependency?</strong> Research has shown that AI companions can paradoxically deepen isolation. Our design addresses this head-on by encoding the relational scaffolding philosophy into the dataset itself. The AI is explicitly constrained to be temporary. But we remain vigilant — our evaluation framework (using structural causal models and the UCLA Loneliness Scale measured at three time points) will tell us whether we are succeeding or inadvertently causing harm.
+    </p>
+
+    <div class="callout red">
+      <div class="callout-title">⚠️ An Honest Admission</div>
+      <p>
+        We do not have all the ethical answers. What we have is a commitment to asking the questions rigorously, listening to community feedback, and designing systems that prioritise human agency over algorithmic engagement. If our evaluation reveals that the intervention causes harm, we will say so publicly. That is the minimum standard for responsible AI research.
+      </p>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ── CONCLUSION ── -->
+  <section class="blog-section" id="conclusion">
+    <h2>Looking Forward</h2>
+
+    <p>
+      This dataset is not finished. It may never be "finished" in the way a static benchmark is finished. It is a living document of how a community expresses suffering, finds resilience, and makes meaning from hardship. As our understanding deepens — through more participatory workshops, more clinical expert reviews, more iterations of the AI system — the dataset will grow and evolve.
+    </p>
+
+    <p>
+      What I am most excited about is the evaluation ahead. We are preparing a randomised controlled trial with at least 200 Kenyan youth participants, comparing our culturally adaptive system against a generic baseline. For the first time, we will be able to isolate whether algorithmic cultural adaptation <em>causally</em> reduces loneliness, not just whether it correlates with engagement. If the answer is yes, we will have demonstrated something the field has theorised but never proven: that deep cultural adaptation in AI is not a luxury — it is a clinical necessity.
+    </p>
+
+    <p>
+      If the answer is no, that finding will be equally valuable. Either way, the dataset we are building — this careful documentation of how East African communities experience, express, and cope with loneliness — will remain a resource for future researchers who believe, as I do, that AI should serve all of humanity, not just the cultures that built it.
+    </p>
+
+    <blockquote>
+      <p>The goal is not to build an AI that understands loneliness. The goal is to build an AI that understands loneliness <em>the way Kenyans understand loneliness</em> — and then helps them find their way back to each other.</p>
+      <cite>— Kinyua Seaman, June 2026</cite>
+    </blockquote>
+
+    <ul class="tag-list" style="margin-top: 2.5rem;">
+      <li class="gold">#CulturalAI</li>
+      <li class="teal">#MentalHealthAI</li>
+      <li class="violet">#DatasetDevelopment</li>
+      <li class="gold">#EastAfrica</li>
+      <li class="teal">#RAG</li>
+      <li class="violet">#LonelinessIntervention</li>
+      <li class="gold">#JKUAT</li>
+      <li class="teal">#OpenSource</li>
+    </ul>
+  </section>
+
+</main>
+
+<!-- Footer -->
+<footer>
+  <div class="footer-brand">Kinyua Seaman</div>
+  <p>MSc Artificial Intelligence — Jomo Kenyatta University of Agriculture and Technology</p>
+  <p>Supervised by Dr. Lawrence Nderu & Dr. Raphael Wanjiku</p>
+  <p style="margin-top: 1rem; opacity: 0.5;">© 2026. Released under Creative Commons Attribution 4.0.</p>
+</footer>
+
+
+<!-- ═══════════════════ JAVASCRIPT ═══════════════════ -->
+<script>
+(function() {
+  'use strict';
+
+  // ── Reading Progress Bar ──
+  const progressBar = document.getElementById('progress-bar');
+  function updateProgress() {
+    const scrollTop = window.scrollY;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+    progressBar.style.width = progress + '%';
+  }
+
+  // ── Nav scroll effect ──
+  const nav = document.getElementById('main-nav');
+  function updateNav() {
+    nav.classList.toggle('scrolled', window.scrollY > 50);
+  }
+
+  // ── Intersection Observer for fade-in sections ──
+  const sections = document.querySelectorAll('.blog-section');
+  const observerOptions = {
+    root: null,
+    rootMargin: '0px 0px -80px 0px',
+    threshold: 0.08
+  };
+  const sectionObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, observerOptions);
+  sections.forEach(s => sectionObserver.observe(s));
+
+  // ── TOC sidebar active state ──
+  const tocDots = document.querySelectorAll('.toc-dot');
+  const tocTargets = [];
+  tocDots.forEach(dot => {
+    const targetId = dot.getAttribute('data-target');
+    const targetEl = document.getElementById(targetId);
+    if (targetEl) tocTargets.push({ dot, el: targetEl });
+
+    // Click to scroll
+    dot.addEventListener('click', () => {
+      if (targetEl) {
+        targetEl.scrollIntoView({ behavior: 'smooth' });
+      }
+    });
+  });
+
+  function updateToc() {
+    let active = tocTargets[0];
+    const scrollY = window.scrollY + window.innerHeight * 0.35;
+    tocTargets.forEach(t => {
+      if (t.el.offsetTop <= scrollY) active = t;
+    });
+    tocTargets.forEach(t => {
+      t.dot.classList.toggle('active', t === active);
+    });
+  }
+
+  // ── Throttled scroll handler ──
+  let ticking = false;
+  window.addEventListener('scroll', () => {
+    if (!ticking) {
+      requestAnimationFrame(() => {
+        updateProgress();
+        updateNav();
+        updateToc();
+        ticking = false;
+      });
+      ticking = true;
+    }
+  }, { passive: true });
+
+  // Initial calls
+  updateProgress();
+  updateNav();
+  updateToc();
+})();
+</script>
+
+</body>
+</html>

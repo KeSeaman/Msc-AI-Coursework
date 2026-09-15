@@ -1,0 +1,49 @@
+# Exclude Thesis folder
+Thesis/
+
+# Large dataset files (17GB+)
+Computer Vision/data/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Python artifacts
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+dist/
+build/
+
+# Jupyter checkpoints
+.ipynb_checkpoints/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# LaTeX auxiliary files
+*.aux
+*.log
+*.out
+*.toc
+*.synctex.gz
+*.fls
+*.fdb_latexmk
+missfont.log
+
+# pytest cache
+.pytest_cache/
+
+# IDE
+.idea/
+.vscode/
+
+# Large binary/model files
+*.h5
+*.hdf5
+*.pkl
+*.npy
+*.npz

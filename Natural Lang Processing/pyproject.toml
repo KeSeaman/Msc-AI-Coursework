@@ -1,0 +1,16 @@
+[project]
+name = "nlp-translation"
+version = "0.1.0"
+description = "Kamba-English Machine Translation"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "torch",
+    "transformers[torch]",
+    "datasets",
+    "evaluate",
+    "sacrebleu",
+    "jupyter",
+    "sentencepiece",
+    "accelerate"
+]

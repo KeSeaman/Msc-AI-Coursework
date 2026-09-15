@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Interactive SLAM Robot Visualization</title>
+  <meta name="description" content="Explore a 2D SLAM robot simulation with live rendering, controls, and dynamic map updates." />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #0d0d0d, #202020);
+      color: #e0e0e0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+    }
+    header {
+      padding: 1rem 2rem;
+      width: 100%;
+      text-align: center;
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(5px);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+    h1 { margin: 0; font-size: 2rem; color: #fff; }
+    #canvasContainer {
+      position: relative;
+      margin-top: 1rem;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+    }
+    canvas {
+      background: #111;
+      display: block;
+    }
+    .controls {
+      margin-top: 1rem;
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    button, input[type=range] {
+      appearance: none;
+      background: rgba(255,255,255,0.1);
+      border: none;
+      border-radius: 8px;
+      padding: 0.6rem 1rem;
+      color: #e0e0e0;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+    }
+    button:hover, input[type=range]:hover {
+      background: rgba(255,255,255,0.2);
+    }
+    button:active {
+      transform: scale(0.97);
+    }
+    input[type=range] {
+      width: 150px;
+      height: 0.4rem;
+      margin-top: 0.5rem;
+    }
+    .footer {
+      margin-top: auto;
+      padding: 1rem;
+      font-size: 0.8rem;
+      color: #888;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🦾 SLAM Robot Interactive Demo</h1>
+  </header>
+
+  <div id="canvasContainer">
+    <canvas id="simCanvas" width="800" height="800"></canvas>
+  </div>
+
+  <div class="controls">
+    <button id="resetBtn">Reset</button>
+    <label>
+      Linear Speed
+      <input type="range" id="linSpeed" min="0" max="3" step="0.1" value="1" />
+    </label>
+    <label>
+      Angular Speed
+      <input type="range" id="angSpeed" min="-2" max="2" step="0.1" value="0" />
+    </label>
+    <label>
+      Sensor Noise
+      <input type="range" id="noise" min="0" max="0.2" step="0.01" value="0.05" />
+    </label>
+  </div>
+
+  <div class="footer">Created with ❤️ using vanilla JavaScript, Canvas API, and a touch of CSS magic.</div>
+
+  <script>
+    // ---------- Simulation Parameters ----------
+    const config = {
+      width: 50, // world width (meters)
+      height: 50,
+      resolution: 1, // meters per grid cell
+      lidarRays: 72,
+      lidarFOV: Math.PI * 2,
+      lidarRange: 15,
+      dt: 0.1,
+    };
+
+    // ---------- Helper Math ----------
+    const lerp = (a,b,t)=>a+(b-a)*t;
+    const clamp = (v, lo, hi)=>Math.max(lo, Math.min(hi, v));
+
+    // ---------- Environment ----------
+    class Environment {
+      constructor(){
+        this.gridX = Math.ceil(config.width/config.resolution);
+        this.gridY = Math.ceil(config.height/config.resolution);
+        this.grid = new Array(this.gridX).fill(0).map(()=>new Array(this.gridY).fill(0));
+        this._generateObstacles();
+      }
+      _generateObstacles(){
+        // outer walls
+        for(let i=0;i<this.gridX;i++) this.grid[i][0]=this.grid[i][this.gridY-1]=1;
+        for(let j=0;j<this.gridY;j++) this.grid[0][j]=this.grid[this.gridX-1][j]=1;
+        // inner boxes (mirroring Python version)
+        const fill = (x0,x1,y0,y1)=>{for(let i=x0;i<x1;i++) for(let j=y0;j<y1;j++) this.grid[i][j]=1;};
+        fill(10,15,10,30);
+        fill(30,45,10,15);
+        fill(25,30,35,45);
+        // random blocks
+        for(let k=0;k<5;k++){
+          const cx = Math.floor(Math.random()* (this.gridX-10)) + 5;
+          const cy = Math.floor(Math.random()* (this.gridY-10)) + 5;
+          const w = Math.floor(Math.random()*4)+2;
+          const h = Math.floor(Math.random()*4)+2;
+          fill(cx,cx+w,cy,cy+h);
+        }
+      }
+      // Simulate LiDAR using simple ray‑casting on the grid
+      getLidar(pose, noiseStd){
+        const [x,y,theta] = pose;
+        const relAngles = [];
+        const distances = [];
+        const step = config.resolution*0.5;
+        for(let i=0;i<config.lidarRays;i++){
+          const rel = -config.lidarFOV/2 + i*config.lidarFOV/config.lidarRays;
+          relAngles.push(rel);
+          let dist = config.lidarRange;
+          let rx = x, ry = y;
+          const dx = Math.cos(theta+rel)*step;
+          const dy = Math.sin(theta+rel)*step;
+          while(dist < config.lidarRange){
+            rx += dx; ry += dy; dist += step;
+            const gx = Math.floor(rx/config.resolution);
+            const gy = Math.floor(ry/config.resolution);
+            if(gx<0||gx>=this.gridX||gy<0||gy>=this.gridY){
+              break;
+            }
+            if(this.grid[gx][gy]===1){
+              const noisy = dist + (noiseStd? (Math.random()*2-1)*noiseStd : 0);
+              distances.push(noisy);
+              break;
+            }
+          }
+          if(dist>=config.lidarRange) distances.push(dist);
+        }
+        return {relAngles, distances};
+      }
+    }
+
+    // ---------- Robot ----------
+    class Robot {
+      constructor(initPose){
+        this.truePose = [...initPose]; // [x,y,theta]
+        this.estPose = [...initPose]; // odometry estimate
+        this.truePath = [];
+        this.estPath = [];
+      }
+      // differential drive: simple Euler integration
+      move(v,w){
+        const dt = config.dt;
+        // true motion (no noise)
+        this.truePose[0] += v*Math.cos(this.truePose[2])*dt;
+        this.truePose[1] += v*Math.sin(this.truePose[2])*dt;
+        this.truePose[2] += w*dt;
+        // odometry with Gaussian noise on both v and w
+        const vNoisy = v + (Math.random()*0.2-0.1);
+        const wNoisy = w + (Math.random()*0.2-0.1);
+        this.estPose[0] += vNoisy*Math.cos(this.estPose[2])*dt;
+        this.estPose[1] += vNoisy*Math.sin(this.estPose[2])*dt;
+        this.estPose[2] += wNoisy*dt;
+        // store paths
+        this.truePath.push([...this.truePose]);
+        this.estPath.push([...this.estPose]);
+        return [vNoisy,wNoisy];
+      }
+    }
+
+    // ---------- Occupancy Grid (log‑odds) ----------
+    class OccupancyGrid {
+      constructor(){
+        this.logOdds = new Array(config.width/config.resolution).fill(0).map(()=>new Array(config.height/config.resolution).fill(0));
+        this.l_occ = Math.log(0.7/0.3);
+        this.l_free = Math.log(0.3/0.7);
+      }
+      // Bresenham line rasterisation (grid cells)
+      *bresenham(x0,y0,x1,y1){
+        const gx0 = Math.floor(x0/config.resolution);
+        const gy0 = Math.floor(y0/config.resolution);
+        const gx1 = Math.floor(x1/config.resolution);
+        const gy1 = Math.floor(y1/config.resolution);
+        let dx = Math.abs(gx1-gx0), dy = Math.abs(gy1-gy0);
+        let sx = gx0<gx1?1:-1, sy = gy0<gy1?1:-1;
+        let err = (dx>dy?dx:-dy)/2, x=gx0, y=gy0;
+        while(true){
+          yield [x,y];
+          if(x===gx1 && y===gy1) break;
+          const e2 = err;
+          if(e2> -dx){ err -= dy; x += sx; }
+          if(e2< dy){ err += dx; y += sy; }
+        }
+      }
+      update(pose, angles, dists){
+        const [rx,ry,rtheta] = pose;
+        for(let i=0;i<angles.length;i++){
+          const dist = dists[i];
+          const angle = angles[i];
+          const gx = rx + dist*Math.cos(rtheta+angle);
+          const gy = ry + dist*Math.sin(rtheta+angle);
+          const cells = [...this.bresenham(rx,ry,gx,gy)];
+          const hit = dist < config.lidarRange;
+          cells.forEach((c,idx)=>{
+            const [cx,cy] = c;
+            if(cx<0||cy<0||cx>=this.logOdds.length||cy>=this.logOdds[0].length) return;
+            if(hit && idx===cells.length-1){
+              this.logOdds[cx][cy] += this.l_occ;
+            } else {
+              this.logOdds[cx][cy] += this.l_free;
+            }
+          });
+        }
+      }
+      getProbMap(){
+        const rows = this.logOdds.length, cols = this.logOdds[0].length;
+        const probs = new Array(rows).fill(0).map(()=>new Array(cols).fill(0));
+        for(let i=0;i<rows;i++){
+          for(let j=0;j<cols;j++){
+            const lo = this.logOdds[i][j];
+            probs[i][j] = 1 - (1/(1+Math.exp(lo)));
+          }
+        }
+        return probs;
+      }
+    }
+
+    // ---------- Rendering ----------
+    const canvas = document.getElementById('simCanvas');
+    const ctx = canvas.getContext('2d');
+    const widthPx = canvas.width, heightPx = canvas.height;
+    // Compute a uniform scale that ensures the entire world fits inside the canvas with a small margin.
+    const margin = 0.05; // 5 % margin on each side
+    const scale = Math.min((widthPx * (1 - 2*margin)) / config.width,
+                           (heightPx * (1 - 2*margin)) / config.height);
+    const offsetX = (widthPx - config.width * scale) / 2;
+    const offsetY = (heightPx - config.height * scale) / 2;
+    const env = new Environment();
+    const robot = new Robot([5,5,0]);
+    const grid = new OccupancyGrid();
+
+    // control elements
+    const linCtrl = document.getElementById('linSpeed');
+    const angCtrl = document.getElementById('angSpeed');
+    const noiseCtrl = document.getElementById('noise');
+    document.getElementById('resetBtn').addEventListener('click',()=>{resetSimulation();});
+    function resetSimulation(){
+      robot.truePose = [5,5,0];
+      robot.estPose = [5,5,0];
+      robot.truePath = [];
+      robot.estPath = [];
+      // reset grid log‑odds
+      for(let i=0;i<grid.logOdds.length;i++)
+        grid.logOdds[i].fill(0);
+    }
+
+    function drawGrid(){
+      const probs = grid.getProbMap();
+      for(let i=0;i<probs.length;i++){
+        for(let j=0;j<probs[i].length;j++){
+          const p = probs[i][j];
+          const gray = Math.floor(255*(1-p)); // free cells lighter
+          ctx.fillStyle = `rgb(${gray},${gray},${gray})`;
+          // Apply margin offsets so everything stays centered
+          ctx.fillRect(offsetX + i*scale,
+                       offsetY + (probs[0].length-j-1)*scale,
+                       scale,
+                       scale);
+        }
+      }
+    }
+    function drawEnvironment(){
+      // Draw obstacles with a vivid color so they stand out against the occupancy‑grid background
+      ctx.fillStyle = 'rgba(220,30,30,0.7)'; // semi‑transparent red
+      for(let i=0;i<env.gridX;i++){
+        for(let j=0;j<env.gridY;j++){
+          if(env.grid[i][j]===1){
+            ctx.fillRect(offsetX + i*scale, offsetY + (env.gridY-j-1)*scale, scale, scale);
+          }
+        }
+      }
+    }
+    function drawPath(path, color){
+      if(path.length<2) return;
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      for(let i=0;i<path.length;i++){
+        const [x,y] = path[i];
+        const px = offsetX + x*scale;
+        const py = offsetY + (config.height - y)*scale;
+        if(i===0) ctx.moveTo(px, py);
+        else ctx.lineTo(px, py);
+      }
+      ctx.stroke();
+    }
+    function drawRobot(pose, color){
+      const [x,y,theta] = pose;
+      const cx = offsetX + x*scale;
+      const cy = offsetY + (config.height - y)*scale;
+      const r = scale*0.4;
+      ctx.save();
+      ctx.translate(cx, cy);
+      ctx.rotate(-theta);
+      ctx.fillStyle = color;
+      ctx.beginPath();
+      ctx.arc(0,0,r,0,Math.PI*2);
+      ctx.fill();
+      // heading line
+      ctx.strokeStyle = '#fff';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(0,0);
+      ctx.lineTo(r,0);
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    // ---------- Simulation Loop ----------
+    let lastTime = null;
+    function step(timestamp){
+      if(!lastTime) lastTime = timestamp;
+      const dt = (timestamp - lastTime)/1000; // seconds
+      if(dt >= config.dt){
+        // simple waypoint navigation (static circular path)
+        const v = parseFloat(linCtrl.value);
+        const w = parseFloat(angCtrl.value);
+        robot.move(v,w);
+        const {relAngles, distances} = env.getLidar(robot.truePose, parseFloat(noiseCtrl.value));
+        grid.update(robot.estPose, relAngles, distances);
+        lastTime = timestamp;
+      }
+      // render
+      ctx.clearRect(0,0,widthPx,heightPx);
+      // Draw environment first, then occupancy grid so obstacles are visible
+      drawEnvironment();
+      drawGrid();
+      drawPath(robot.truePath, '#00ff00');
+      drawPath(robot.estPath, '#00aaff');
+      drawRobot(robot.truePose, '#0f0');
+      drawRobot(robot.estPose, '#0ff');
+      requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  </script>
+</body>
+</html>

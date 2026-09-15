@@ -1,0 +1,77 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{geometry}
+\usepackage{hyperref}
+\geometry{margin=1in}
+
+\title{Computer Vision Experiments: Technical Report}
+\author{Kinyua Seaman}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+This report summarizes a series of five foundational computer vision experiments performed on a provided test image. The experiments encompass spatial frequency filtering, edge detection, line extraction, feature detection, and performance benchmarking. We detail the methodologies, observations, and theoretical underpinnings for each task, confirming classical computer vision principles.
+\end{abstract}
+
+\section{Introduction}
+The objectives of the experiments were to apply fundamental image processing and computer vision techniques to analyze, restore, and extract features from a given image. The techniques evaluated included Fourier-based noise removal, Canny edge detection, Hough transform for line detection, Harris corner detection, and computational profiling of feature extraction methods.
+
+\section{Experiment Results and Observations}
+
+\subsection{Fourier Transform and Periodic Noise Removal}
+The initial image suffered from periodic noise, which manifests in the spatial domain as a repeating interference pattern. To isolate and eliminate this noise, a 2D Fast Fourier Transform (FFT) was applied to convert the image to the frequency domain \cite{gonzalez2018}. By analyzing the logarithmic magnitude spectrum, the periodic noise was identified as distinct, high-intensity impulses symmetrically distributed around the zero-frequency (DC) component. 
+Specifically, the noise peaks were located at frequency offsets $(u, v) \in \{(54, 5), (-54, -5), (-6, 61), (6, -61)\}$. A notch filter with a radius of 3 was constructed to mask these specific frequency coordinates, setting their corresponding magnitudes to zero. Applying the inverse FFT on the filtered spectrum successfully restored the clean image structure without the blurring artifacts that would typically accompany a global low-pass filter.
+
+\subsection{Canny Edge Detection and Hysteresis Thresholding}
+Following noise removal, Canny edge detection \cite{canny1986} was applied to extract the structural boundaries of the scene. We investigated the effect of varying the hysteresis threshold parameters. 
+Applying exceptionally low thresholds (e.g., lower bound 5, upper bound 25) produced an over-segmented edge map. This configuration was overly sensitive, capturing non-structural textures and residual noise, leading to a ``spiderweb'' appearance. Conversely, applying very high thresholds (e.g., 360, 380) resulted in an under-segmented map where prominent structural edges, such as building windows, were lost. This demonstrates the critical need for optimal threshold selection to isolate meaningful semantic contours from background noise.
+
+\subsection{The Hough Transform}
+The Hough Transform \cite{duda1972} was utilized to detect primary linear features within the image. A Probabilistic Hough Transform was applied to the optimally segmented Canny edge map (thresholds 50, 150). The algorithm successfully parameterized and extracted the dominant straight lines, which primarily corresponded to the architectural features of the building, such as the facade structure and rooflines. This experiment validated the robustness of the Hough space representation for identifying continuous geometric structures even from disjointed edge pixels.
+
+\subsection{Harris Corner Detection and Rotational Invariance}
+To identify distinct interest points, the Harris Corner Detector \cite{harris1988} was applied using a block size of 2, a Sobel aperture of 3, and a Harris free parameter of $k = 0.04$. To test rotational invariance, the restored image was computationally rotated by 45 degrees using an affine transformation, and the corner detection was repeated. 
+The experiments verified that the Harris response is invariant to image rotation. The detected corners transformed consistently with the image rotation. Mathematically, the Harris response $R$ is derived from the eigenvalues of the structure tensor $M$, defined as $R = \det(M) - k \cdot \text{Tr}(M)^2$. Because an image rotation constitutes an orthogonal similarity transformation, the trace and determinant of the structure tensor remain invariant, thus preserving the corner response magnitude \cite{szeliski2010}.
+
+\subsection{Haar Cascade vs. Sobel Filtering Timing}
+The final experiment evaluated the computational efficiency of two distinct operations: object detection via a pre-trained Haar Cascade \cite{viola2001} and spatial filtering via a manual $3 \times 3$ Sobel convolution. Profiling the execution times revealed that the custom $3 \times 3$ Sobel convolution (implemented via optimized 2D filtering) was significantly faster. This difference in execution time is expected; the Sobel operation is a single-pass linear filtering process, whereas the Haar Cascade involves evaluating numerous simple rectangular features across multiple scales and locations using a sliding window and an integral image.
+
+\section{Conclusion}
+The set of experiments demonstrated the practical application and theoretical validity of core computer vision algorithms. The Fourier transform successfully decoupled spatial noise from the image signal. Canny and Hough algorithms provided robust geometric feature extraction when appropriately parameterized. Finally, the Harris corner detector exhibited the expected rotational invariance, and the performance benchmarking highlighted the computational trade-offs between localized linear filtering and multi-scale feature detection cascades.
+
+\begin{thebibliography}{9}
+\bibitem{gonzalez2018} 
+Gonzalez, R. C., \& Woods, R. E. (2018). 
+\textit{Digital Image Processing} (4th ed.). Pearson.
+
+\bibitem{canny1986} 
+Canny, J. (1986). 
+A Computational Approach to Edge Detection. 
+\textit{IEEE Transactions on Pattern Analysis and Machine Intelligence}, 8(6), 679-698.
+
+\bibitem{duda1972} 
+Duda, R. O., \& Hart, P. E. (1972). 
+Use of the Hough transformation to detect lines and curves in pictures. 
+\textit{Communications of the ACM}, 15(1), 11-15.
+
+\bibitem{harris1988} 
+Harris, C., \& Stephens, M. (1988). 
+A combined corner and edge detector. 
+\textit{In Alvey vision conference} (Vol. 15, No. 50, pp. 10-5244).
+
+\bibitem{szeliski2010}
+Szeliski, R. (2010). 
+\textit{Computer Vision: Algorithms and Applications}. Springer.
+
+\bibitem{viola2001} 
+Viola, P., \& Jones, M. (2001). 
+Rapid object detection using a boosted cascade of simple features. 
+\textit{In Proceedings of the 2001 IEEE computer society conference on computer vision and pattern recognition (CVPR)}.
+\end{thebibliography}
+
+\end{document}
