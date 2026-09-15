@@ -168,25 +168,40 @@ uv run main.py
 
 | File | Description | Format |
 |:--|:--|:--|
-| [`AI_G&E_Term_Paper.pdf`](Ethics%20&%20Governance%20in%20AI/AI_G&E_Term_Paper.pdf) | **Term Paper:** *AI Governance and Ethics: Frameworks and Challenges* — Synthesis and critical analysis based on the IPCIDE webinar series report | PDF (Compiled) |
+| [`AI_G&E_Term_Paper.pdf`](Ethics%20&%20Governance%20in%20AI/AI_G&E_Term_Paper.pdf) | **Term Paper:** *AI Governance and Ethics: Frameworks and Challenges* — Full analytical paper covering all required governance subtopics | PDF (Compiled) |
 | [`Ethics-and-Governance-of-AI-Synthesis.pdf`](Ethics%20&%20Governance%20in%20AI/Ethics-and-Governance-of-AI-Synthesis.pdf) | Foundational synthesis report from the ICRIER Prosus Centre for Internet and Digital Economy (IPCIDE) webinar series (October 2025 – January 2026) | PDF (Source) |
 
-#### Term Paper: *AI Governance and Ethics: Frameworks and Challenges*
+> 📌 **Coursework Assignment Brief:**
+>
+> *"Read the synthesis report on Ethics and Governance of AI drawing perspectives from the webinar series convened by The ICRIER Prosus Centre for Internet and Digital Economy (IPCIDE) from October 2025 to January 2026.*
+>
+> *Based on this Synthesis report, develop a term paper titled, **AI Governance and Ethics: Frameworks and Challenges** under the following subtopics:*
+> 1. *Introduction*
+> 2. *Problem statement*
+> 3. *Overview of AI Governance*
+> 4. *Current frameworks (including The role of Private sector Governance)*
+> 5. *Ethical Considerations in AI (Bias and Fairness, Privacy and data Protection, Transparency and explainability, Accountability and Responsibility)*
+> 6. *Future considerations*
+> 7. *Conclusions and Recommendation*
+> 8. *References"*
 
-Developed from the ICRIER Prosus Centre for Internet and Digital Economy (IPCIDE) synthesis report, this term paper investigates systemic asymmetries, regulatory landscapes, and ethical tensions defining contemporary artificial intelligence across eight key areas:
+#### 📑 Term Paper Structure & Key Highlights
 
-1. **Introduction** — Contextualising geopolitical and technological shifts in generative and agentic AI governance.
-2. **Problem Statement** — Structural asymmetries in the AI value chain, material/environmental exploitation, digital sovereignty deficits, and technocratic engagement gaps.
-3. **Overview of AI Governance** — Core principles, institutional mandates, and international coordination mechanisms.
-4. **Current Frameworks** — Comparative analysis of global regulatory models (EU AI Act, US Executive Orders, BRICS approaches), upstream–downstream allocation gaps, and **the role of private sector governance** and antitrust interventions.
-5. **Ethical Considerations in AI**:
-   - **Bias and Fairness** — Algorithmic discrimination, dataset representation, and systemic harms
-   - **Privacy and Data Protection** — Surveillance capitalism, consent paradigms, and cross-border data flows
-   - **Transparency and Explainability** — Black-box opacity, model auditability, and interpretability
-   - **Accountability and Responsibility** — Liability distribution across the AI supply chain
-6. **Future Considerations** — Operationalising the SCAIS framework, securing the sovereign AI stack (KASE), and treating AI as Digital Public Infrastructure (DPI).
-7. **Conclusions and Recommendations** — Actionable policy pathways for equitable, resilient, and human-centric AI ecosystems.
-8. **References** — Scholarly literature, legal statutes, and multilateral policy reports.
+The completed term paper directly addresses the coursework brief through a rigorous analytical exploration:
+
+- **1. Introduction** — Situating generative and agentic AI governance within accelerating geopolitical tensions, compute monopolies, and institutional fragmentation.
+- **2. Problem Statement** — Examining structural asymmetries in the AI value chain, material and environmental exploitation, Global South digital sovereignty deficits, and technocratic engagement gaps.
+- **3. Overview of AI Governance** — Core principles, institutional mandates (UNESCO, OECD, G20, AU), and international coordination mechanisms.
+- **4. Current Frameworks** — Comparative analysis of the EU AI Act (risk-tiered approach), US Executive Orders (market-driven standards), and BRICS multilateral approaches:
+  - **The Role of Private Sector Governance** — Corporate self-regulation limits, upstream–downstream liability allocation gaps, and antitrust/competition policy interventions.
+- **5. Ethical Considerations in AI**:
+  - **Bias and Fairness** — Algorithmic discrimination, unrepresentative demographic datasets, and systemic allocative harms.
+  - **Privacy and Data Protection** — Surveillance capitalism, non-consensual biometric scraping, and cross-border data sovereignty.
+  - **Transparency and Explainability** — Black-box opacity, model auditability, interpretability techniques, and disclosure requirements.
+  - **Accountability and Responsibility** — Strict liability regimes, provenance tracking, and supply chain accountability.
+- **6. Future Considerations** — Operationalising the **SCAIS framework**, securing the sovereign AI stack (**KASE: Knowledge, Compute, Sovereign Cloud, Data**), and conceptualising AI as **Digital Public Infrastructure (DPI)**.
+- **7. Conclusions and Recommendations** — Actionable policy roadmaps for developing nations balancing technological innovation with fundamental rights and digital sovereignty.
+- **8. References** — Comprehensive citations across peer-reviewed literature, global statutes, and multilateral policy reports.
 
 **Key Themes:** EU AI Act · US Executive Orders · Global South & BRICS Perspectives · Data Sovereignty vs. Data Colonialism · Algorithmic Accountability · Environmental Costs of AI
 
