@@ -1,5 +1,5 @@
 <p align="center">
-  <h1 align="center">🎓 MSc Artificial Intelligence — Coursework Portfolio</h1>
+  <h1 align="center">🎓 MSc Artificial Intelligence — Coursework</h1>
   <p align="center">
     <strong>Jomo Kenyatta University of Agriculture and Technology (JKUAT)</strong><br>
     <em>A curated collection of assignments, projects, and research across the MSc AI programme</em>
@@ -7,7 +7,7 @@
   <p align="center">
     <img src="https://img.shields.io/badge/Degree-MSc_Artificial_Intelligence-blue?style=for-the-badge" alt="Degree"/>
     <img src="https://img.shields.io/badge/University-JKUAT-green?style=for-the-badge" alt="University"/>
-    <img src="https://img.shields.io/badge/Status-In_Progress-orange?style=for-the-badge" alt="Status"/>
+    <img src="https://img.shields.io/badge/Status-In_Progress:_Thesis_Ongoing-orange?style=for-the-badge" alt="Status"/>
   </p>
 </p>
 
