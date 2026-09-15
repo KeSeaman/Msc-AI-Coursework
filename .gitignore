@@ -58,4 +58,6 @@ missfont.log
 *.csv
 *.tsv
 *.parquet
-
+# Ethics & Governance scripts and draft notebooks
+Ethics & Governance in AI/*.py
+Ethics & Governance in AI/*.ipynb

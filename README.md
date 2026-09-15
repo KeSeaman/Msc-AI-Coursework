@@ -164,14 +164,31 @@ uv run main.py
 
 ### 6. Ethics & Governance in AI
 
-> *AI sovereignty, governance asymmetries, and the Global South perspective*
+> *Critical inquiry into global AI regulatory architectures, ethical frameworks, and the Global South perspective*
 
-| File | Description |
-|:--|:--|
-| `AI_G&E_Term_Paper.ipynb` | **Synthesis paper:** AI governance frameworks, data sovereignty, antitrust regulation, and the BRICS perspective on non-aligned AI policy |
-| `Ethics-and-Governance-of-AI-Synthesis.pdf` | Compiled synthesis report |
+| File | Description | Format |
+|:--|:--|:--|
+| [`AI_G&E_Term_Paper.pdf`](Ethics%20&%20Governance%20in%20AI/AI_G&E_Term_Paper.pdf) | **Term Paper:** *AI Governance and Ethics: Frameworks and Challenges* — Synthesis and critical analysis based on the IPCIDE webinar series report | PDF (Compiled) |
+| [`Ethics-and-Governance-of-AI-Synthesis.pdf`](Ethics%20&%20Governance%20in%20AI/Ethics-and-Governance-of-AI-Synthesis.pdf) | Foundational synthesis report from the ICRIER Prosus Centre for Internet and Digital Economy (IPCIDE) webinar series (October 2025 – January 2026) | PDF (Source) |
 
-**Key Themes:** EU AI Act · US executive orders · BRICS AI governance · Data sovereignty vs. data colonialism · Algorithmic accountability · Environmental costs of AI
+#### Term Paper: *AI Governance and Ethics: Frameworks and Challenges*
+
+Developed from the ICRIER Prosus Centre for Internet and Digital Economy (IPCIDE) synthesis report, this term paper investigates systemic asymmetries, regulatory landscapes, and ethical tensions defining contemporary artificial intelligence across eight key areas:
+
+1. **Introduction** — Contextualising geopolitical and technological shifts in generative and agentic AI governance.
+2. **Problem Statement** — Structural asymmetries in the AI value chain, material/environmental exploitation, digital sovereignty deficits, and technocratic engagement gaps.
+3. **Overview of AI Governance** — Core principles, institutional mandates, and international coordination mechanisms.
+4. **Current Frameworks** — Comparative analysis of global regulatory models (EU AI Act, US Executive Orders, BRICS approaches), upstream–downstream allocation gaps, and **the role of private sector governance** and antitrust interventions.
+5. **Ethical Considerations in AI**:
+   - **Bias and Fairness** — Algorithmic discrimination, dataset representation, and systemic harms
+   - **Privacy and Data Protection** — Surveillance capitalism, consent paradigms, and cross-border data flows
+   - **Transparency and Explainability** — Black-box opacity, model auditability, and interpretability
+   - **Accountability and Responsibility** — Liability distribution across the AI supply chain
+6. **Future Considerations** — Operationalising the SCAIS framework, securing the sovereign AI stack (KASE), and treating AI as Digital Public Infrastructure (DPI).
+7. **Conclusions and Recommendations** — Actionable policy pathways for equitable, resilient, and human-centric AI ecosystems.
+8. **References** — Scholarly literature, legal statutes, and multilateral policy reports.
+
+**Key Themes:** EU AI Act · US Executive Orders · Global South & BRICS Perspectives · Data Sovereignty vs. Data Colonialism · Algorithmic Accountability · Environmental Costs of AI
 
 ---
 
