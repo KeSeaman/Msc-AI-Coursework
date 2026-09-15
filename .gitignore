@@ -59,7 +59,3 @@ missfont.log
 *.tsv
 *.parquet
 
-# Large document/presentation files
-*.odt
-*.pptx
-*.docx
