@@ -1,6 +1,12 @@
 # Exclude Thesis folder
 Thesis/
 
+# LaTeX source files
+*.tex
+
+# uv lock file
+uv.lock
+
 # Large dataset files (17GB+)
 Computer Vision/data/
 
