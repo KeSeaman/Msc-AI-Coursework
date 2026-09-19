@@ -20,8 +20,8 @@
 - [Modules](#modules)
   - [1. Semester 1 — Foundations](#1-semester-1--foundations)
     - [AI Algos](#ai-algos) — Core AI search strategies, fuzzy inference systems & agent pathfinding in unknown environments
-    - [AI Applications](#ai-applications) — Econometric causal inference study (*The Marginal Utility of Police Force*) based on the Marginal Utility repository
-    - [Foundations of AI](#foundations-of-ai) — Foundational optimisation paradigms & Mixed-Integer Linear Programming (MILP)
+    - [AI Applications](#ai-applications) — Econometric causal inference study (*The Marginal Utility of Police Force*) based on the Marginal_Utility_Police_Force repository
+    - [Foundations of AI](#foundations-of-ai) — Strategic logistics optimisation report based on the Mixed-Integer Linear Programming (`MILP.ipynb`) PuLP implementation
     - [Mathematics for AI (Maths4AI)](#mathematics-for-ai-maths4ai) — Mathematical rigor in linear algebra, multivariable calculus & probability theory
     - [ML Foundations](#ml-foundations) — Supervised & unsupervised learning, regularisation, Perceptrons, CATs & examination papers (Sec A & B)
     - [Python 4 AI](#python-4-ai) — Python programming fundamentals, data manipulation (Pandas/NumPy) & assignment solutions
@@ -113,12 +113,19 @@ Econometric and applied AI research on causal inference and public policy analys
 
 #### Foundations of AI
 
-Analytical and computational optimisation for combinatorial decision-making.
+Analytical and computational optimisation for combinatorial decision-making (Course code: **ICS 105**).
 
 | File | Topic / Description |
 |:--|:--|
-| `Foundations of AI Optimization Report.pdf` | Comprehensive technical report on classical and heuristic optimisation paradigms in AI |
-| `MILP.ipynb` | **Mixed-Integer Linear Programming (MILP)** — Warehouse supply chain routing and resource allocation using PuLP |
+| `Foundations of AI Optimization Report.pdf` | **Term Report:** *Strategic Logistics Optimization via Mixed-Integer Linear Programming (MILP)* — Comprehensive analytical report based directly on the `MILP.ipynb` implementation |
+| `MILP.ipynb` | **Mixed-Integer Linear Programming (MILP)** — PuLP implementation modelling supply chain distribution with non-linear fixed route fees |
+
+> 📌 **Report Context & Implementation:**
+>
+> The term report (*Strategic Logistics Optimization via Mixed-Integer Linear Programming*) is based directly on the **`MILP.ipynb`** notebook implementation. It evaluates a multi-facility supply chain distribution network (Warehouses A & B serving Cafes X, Y, and Z):
+> - **Linear vs. Mixed-Integer Modeling:** Demonstrates why standard Linear Programming (LP) fails in industrial networks with non-linear cost structures — specifically a $70 fixed route-activation fee on shipping lane A $\rightarrow$ Z, which basic LP models ignore.
+> - **Big-M Method:** Implements binary activation variables and Big-M constraints using Python's `PuLP` library to reach the global cost optimum ($655.00 vs. $690.00 manual baseline).
+> - **Sensitivity Analysis & Bottlenecks:** Uses dual-phase sensitivity analysis and shadow pricing to identify Warehouse B as the primary infrastructure bottleneck (shadow price: -$3.00/unit).
 
 #### Mathematics for AI (Maths4AI)
 
