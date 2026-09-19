@@ -45,6 +45,11 @@ The work spans the full breadth of the AI curriculum — from foundational algor
 ```
 Msc-AI-Coursework/
 ├── Sem1/                           # Semester 1 — Foundational AI modules
+│   ├── AI Algos/                   #   AI algorithms, search & fuzzy logic
+│   ├── AI Applications/            #   Applied AI research papers
+│   ├── Foundations of AI/          #   Optimisation & linear programming
+│   ├── ML Foundations/             #   Machine learning exams, CATs & assignments
+│   └── Python 4 AI/               #   Python programming for AI
 ├── Computer Vision/                # Image processing, feature detection, Seq2Seq
 ├── Deep Learning/                  # MLP, CNN, RNN/GRU, Hamming Networks, SOM
 ├── Natural Lang Processing/        # Kamba–English Neural Machine Translation
@@ -62,17 +67,54 @@ Msc-AI-Coursework/
 
 > *Core AI algorithms, optimisation, and Python fundamentals*
 
-| Notebook / File | Topic |
+#### AI Algos
+
+| File | Topic |
 |:--|:--|
 | `AI_Algos_Assigment.ipynb` | AI search algorithms — Assignments 1–4 |
-| `Python4AI.ipynb` | Python programming for AI applications |
+| `AI ALgos Exam.pdf` | AI Algorithms examination paper |
+| `Agent Search in Unknown Environments.pdf` | Agent-based search strategies in unknown environments |
 | `fuzzy_logic.py` | Fuzzy inference engine (triangular & trapezoidal MFs) |
 | `Tipping_Soln.ipynb` | Fuzzy logic tipping system with multiple membership functions |
-| `MILP.ipynb` | Mixed-Integer Linear Programming — warehouse routing optimisation |
-| `perceptron.ipynb` | Single-layer perceptron implementation |
-| `K_Seaman_Q2.ipynb` | Additional assignment solutions |
 | `Random Unknown.py` | A* pathfinding with unknown obstacles on a grid |
 | `Search Unknown.py` | Search algorithms in partially observable environments |
+
+#### AI Applications
+
+| File | Topic |
+|:--|:--|
+| `AI Paper Revised.pdf` | Revised AI research paper |
+
+#### Foundations of AI
+
+| File | Topic |
+|:--|:--|
+| `Foundations of AI Optimization Report.pdf` | Comprehensive report on foundational AI optimisation techniques |
+| `MILP.ipynb` | Mixed-Integer Linear Programming — warehouse routing optimisation |
+
+#### ML Foundations
+
+| File | Topic |
+|:--|:--|
+| `ICS3305 - ML Foundations.pdf` | Machine Learning Foundations — Exam Section A |
+| `ICS3305 - ML Foundations Sec B.pdf` | Machine Learning Foundations — Exam Section B |
+| `Kinyua_Seaman_ML.pdf` | Machine Learning — CAT 2 submission |
+| `Kinyua Seaman ML_CAT.pdf` | Machine Learning Continuous Assessment Test |
+| `Perceptron Assignment.pdf` | Perceptron theory and implementation assignment |
+| `perceptron.ipynb` | Single-layer perceptron implementation |
+
+#### Python 4 AI
+
+| File | Topic |
+|:--|:--|
+| `Python4AI.ipynb` | Python programming for AI applications |
+| `K_Seaman_Q2.ipynb` | Additional assignment solutions |
+
+#### Mathematics for AI
+
+| File | Topic |
+|:--|:--|
+| `Kinyua_Seaman_ CAT_Maths4AI.pdf` | Mathematics for AI — Continuous Assessment Test |
 
 ---
 
@@ -102,6 +144,7 @@ Msc-AI-Coursework/
 | `hamming_network.py` / `.ipynb` | Hamming network for pattern recognition |
 | `self_organizing_map.py` / `.ipynb` | Kohonen Self-Organising Map — unsupervised colour clustering |
 | `winner_takes_all.py` / `.ipynb` | Winner-Takes-All competitive learning network |
+| `ICS 3308 Deep Learning QP.pdf` | Deep Learning past examination paper |
 | `ICS_3308_Deep_Learning_QP_Solutions.ipynb` | Past paper solutions |
 
 <p align="center">
@@ -215,6 +258,7 @@ The completed term paper directly addresses the coursework brief through a rigor
 |:--|:--|
 | `Proposal_Kinyua_Seaman.pdf` | Full research proposal |
 | `CompanionAI+Research+Programme.pdf` | Research programme overview |
+| `Presentation Skills Enhancement (1).odp` | Presentation skills enhancement — slide deck |
 | `blog.html` | Research blog post |
 | `ca_ai/` | **CompanionAI prototype** — Clean Architecture Python backend |
 

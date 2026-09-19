@@ -10,6 +10,12 @@ uv.lock
 # Large dataset files (17GB+)
 Computer Vision/data/
 
+# CV folder (merged into Computer Vision/)
+CV/
+
+# Research folder (merged into Research Methodology/)
+Research/
+
 # Virtual environments
 .venv/
 venv/
