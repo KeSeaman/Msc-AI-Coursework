@@ -113,7 +113,7 @@ Econometric and applied AI research on causal inference and public policy analys
 
 #### Foundations of AI
 
-Analytical and computational optimisation for combinatorial decision-making (Course code: **ICS 105**).
+Analytical and computational optimisation for combinatorial decision-making.
 
 | File | Topic / Description |
 |:--|:--|
@@ -137,7 +137,7 @@ Mathematical foundations underpinning machine learning and probabilistic reasoni
 
 #### ML Foundations
 
-Core machine learning theory, supervised learning benchmarks, margin classifiers, and empirical evaluation (Course code: **ICS 3305**).
+Core machine learning theory, supervised learning benchmarks, margin classifiers, and empirical evaluation.
 
 | File | Topic / Description |
 |:--|:--|
@@ -184,7 +184,7 @@ Image processing, spectral analysis, feature extraction, and sequence-to-sequenc
 
 #### Deep Learning
 
-Comprehensive study of neural architectures (Course code: **ICS 3308**) — from multi-layer perceptrons to recurrent sequence models and unsupervised competitive learning.
+Comprehensive study of neural architectures — from multi-layer perceptrons to recurrent sequence models and unsupervised competitive learning.
 
 | Notebook / File | Topic / Description |
 |:--|:--|
@@ -196,7 +196,7 @@ Comprehensive study of neural architectures (Course code: **ICS 3308**) — from
 | `winner_takes_all.py` / `.ipynb` | Winner-Takes-All (WTA) competitive learning network implementation |
 | `Deep Learning Assignments.pdf` | Official deep learning coursework assignments specification (Assignments 1–4) |
 | `ICS_3308_Deep_Learning.pdf` | Deep Learning course syllabus, lecture materials, and theoretical foundations |
-| `ICS 3308 Deep Learning QP.pdf` | Examination question paper for ICS 3308 Deep Learning |
+| `ICS 3308 Deep Learning QP.pdf` | Deep Learning examination question paper |
 | `ICS_3308_Deep_Learning_QP_Solutions.ipynb` | Complete programming solutions for past examination questions |
 
 <p align="center">
