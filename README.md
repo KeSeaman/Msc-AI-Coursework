@@ -104,7 +104,7 @@ Econometric and applied AI research on causal inference and public policy analys
 
 > 📌 **Project Background & Repository:**
 >
-> This research paper is based on the **[Marginal Utility](https://github.com/KeSeaman/Marginal-Utility)** repository. It investigates whether increasing investment in police funding causally reduces violent crime rates across **2,624 US municipal cities** using observational and budgetary data.
+> This research paper is based on the **[Marginal_Utility_Police_Force](https://github.com/KeSeaman/Marginal_Utility_Police_Force)** repository. It investigates whether increasing investment in police funding causally reduces violent crime rates across **2,624 US municipal cities** using observational and budgetary data.
 >
 > **Methodology & Findings:**
 > - **Econometric Design:** Implements a quasi-experimental **Difference-in-Differences (DiD)** design combined with **Propensity Score Matching (PSM)** (1:1 Nearest Neighbour within a 0.25 SD caliper) and **Doubly Robust Estimation** combining PSM weighting with outcome regression adjustment.
