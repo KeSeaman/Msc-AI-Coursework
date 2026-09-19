@@ -7,7 +7,7 @@
   <p align="center">
     <img src="https://img.shields.io/badge/Degree-MSc_Artificial_Intelligence-blue?style=for-the-badge" alt="Degree"/>
     <img src="https://img.shields.io/badge/University-JKUAT-green?style=for-the-badge" alt="University"/>
-    <img src="https://img.shields.io/badge/Status-In_Progress:_Thesis_Ongoing-orange?style=for-the-badge" alt="Status"/>
+    <img src="https://img.shields.io/badge/Status-In_Progress:_Coursework_Ongoing-orange?style=for-the-badge" alt="Status"/>
   </p>
 </p>
 
@@ -17,7 +17,7 @@
 
 - [Overview](#overview)
 - [Repository Structure](#repository-structure)
-- [Modules & Research](#modules--research)
+- [Modules](#modules)
   - [1. Semester 1 — Foundations](#1-semester-1--foundations)
     - [AI Algos](#ai-algos) — Core AI search strategies, fuzzy inference systems & agent pathfinding in unknown environments
     - [AI Applications](#ai-applications) — Econometric causal inference study (*The Marginal Utility of Police Force*) based on the Marginal Utility repository
@@ -32,7 +32,6 @@
     - [Robotics](#robotics) — SLAM simulation with LiDAR ray-casting, odometry & log-odds occupancy mapping
     - [Ethics & Governance in AI](#ethics--governance-in-ai) — AI sovereignty, global governance architectures (EU AI Act, US EOs, BRICS) & ICRIER IPCIDE synthesis
     - [Research Methodology](#research-methodology) — Culturally-adapted conversational AI for youth mental health (CompanionAI Clean Architecture prototype)
-  - [3. Thesis — MSc Research Proposal](#3-thesis--msc-research-proposal) — Stress testing explainable AI (XAI) in non-linear credit scoring models (SHAP, LIME, EAS, and counterfactual analysis)
 - [Tech Stack](#tech-stack)
 - [Getting Started](#getting-started)
 - [Author](#author)
@@ -44,10 +43,9 @@
 
 This repository houses the complete academic coursework, laboratory implementations, and research artefacts produced during my **MSc in Artificial Intelligence** at **Jomo Kenyatta University of Agriculture and Technology (JKUAT)**.
 
-The academic trajectory is organised into three distinct phases:
+The coursework trajectory is organised into two core academic semesters:
 1. **Semester 1 (Foundations)**: Core mathematical and computational pillars — from search heuristics, fuzzy logic, and Mixed-Integer Linear Programming to foundational machine learning, perceptrons, and scientific Python.
 2. **Semester 2 (Advanced AI Disciplines)**: Specialised technical domains spanning deep learning architectures, computer vision, sequence-to-sequence modelling, neural machine translation for low-resource languages, autonomous SLAM robotics, AI ethics & governance policy, and research methodology.
-3. **Thesis (Ongoing Research)**: Postgraduate research proposal on stress-testing post-hoc Explainable AI (XAI) methods under input perturbations in credit scoring models, adhering to EU AI Act high-risk compliance frameworks.
 
 ---
 
@@ -70,13 +68,12 @@ Msc-AI-Coursework/
 │   ├── Robotics/                       #   SLAM-based mapping robot simulation & LiDAR ray-casting
 │   ├── Ethics & Governance in AI/      #   AI policy, EU AI Act, sovereignty & ICRIER synthesis
 │   └── Research Methodology/           #   CompanionAI mental health research proposal & prototype
-├── Thesis/                             # MSc Thesis — Stress testing XAI in credit scoring
 └── .gitignore
 ```
 
 ---
 
-## 📚 Modules & Research
+## 📚 Modules
 
 ### 1. Semester 1 — Foundations
 
@@ -302,75 +299,12 @@ ca_ai/
 
 ---
 
-### 3. Thesis — MSc Research Proposal
-
-> *Postgraduate MSc Thesis Proposal — Stress testing explainability and decision alignment in regulated credit scoring models*
-
-| File | Description | Format |
-|:--|:--|:--|
-| [`MSc_Thesis_Proposal.pdf`](Thesis/MSc_Thesis_Proposal.pdf) | **MSc Thesis Proposal:** *Stress Testing Explainable AI in Non-Linear Credit Scoring Models: A Framework for Evaluating Stability and Decision-Alignment of Feature Attribution Methods* | PDF (Compiled) |
-| [`MSc Thesis Proposal Stress.md`](Thesis/MSc%20Thesis%20Proposal%20Stress.md) | Complete proposal manuscript (Abstract, Problem Statement, Research Questions, Literature Review, Methodology, Statistical Framework) | Markdown |
-| `MSc_Thesis_Proposal.tex` | Full LaTeX source document for the formal thesis proposal | LaTeX |
-| `deepseek_text_20260616_435c2e.txt` | Literature synthesis, reference notes, and technical citations | Text |
-
-#### 🎯 Research Overview & Core Questions
-
-Credit scoring systems increasingly deploy non-linear models (e.g., **XGBoost**, gradient boosting, TabNet) for superior predictive discrimination over linear models. However, regulatory frameworks — most notably the **European Union Artificial Intelligence Act**, which designates credit scoring as a **high-risk AI application** with 2026–2027 compliance mandates — require automated decisions to be stable, auditable, and actionable.
-
-While post-hoc Explainable AI (XAI) methods like **SHAP** (Shapley Additive exPlanations) and **LIME** (Local Interpretable Model-agnostic Explanations) are widely adopted, current validation techniques fail to stress-test whether explanations remain consistent under realistic data perturbations.
-
-```
-                  ┌─────────────────────────────────┐
-                  │   Credit Risk Benchmark Data    │
-                  │ (Home Credit / Taiwan Default)  │
-                  └────────────────┬────────────────┘
-                                   │
-                 ┌─────────────────┴─────────────────┐
-                 ▼                                   ▼
-      ┌─────────────────────┐             ┌─────────────────────┐
-      │ Logistic Regression │             │  XGBoost Classifier │
-      │  (Linear Baseline)  │             │ (Non-Linear Model)  │
-      └──────────┬──────────┘             └──────────┬──────────┘
-                 │                                   │
-                 └─────────────────┬─────────────────┘
-                                   │
-                                   ▼
-                  ┌─────────────────────────────────┐
-                  │    Feature Attribution Suite    │
-                  │   SHAP  ·  LIME  ·  Hybrid      │
-                  └────────────────┬────────────────┘
-                                   │
-                 ┌─────────────────┴─────────────────┐
-                 ▼                                   ▼
-      ┌─────────────────────┐             ┌─────────────────────┐
-      │ Perturbation Stress │             │   Counterfactual    │
-      │   (Gaussian/Noise)  │             │  Generation (CCS)   │
-      └──────────┬──────────┘             └──────────┬──────────┘
-                 │                                   │
-                 └─────────────────┬─────────────────┘
-                                   │
-                                   ▼
-                  ┌─────────────────────────────────┐
-                  │   Explanation Alignment Score   │
-                  │           (EAS Metric)          │
-                  └─────────────────────────────────┘
-```
-
-#### 🔬 Key Technical Contributions
-
-1. **Explanation Alignment Score (EAS):** A novel metric quantifying explanation reliability by jointly measuring attribution stability under input perturbations and attribution sensitivity across decision boundary shifts.
-2. **Constrained Counterfactual Generation (CCS):** An algorithmic framework assessing whether post-hoc attributions correctly highlight the minimal, actionable feature adjustments that change model classification.
-3. **Empirical Benchmarking:** Extensive comparative evaluation across the **Home Credit Default Risk** and **Taiwan Credit Card Default** datasets, evaluating trade-offs between model non-linearity and explanatory fidelity.
-
----
-
 ## 🛠 Tech Stack
 
 | Category | Technologies |
 |:--|:--|
 | **Languages** | Python 3.10+ |
-| **Machine Learning & Deep Learning** | PyTorch, TensorFlow/Keras, scikit-learn, HuggingFace Transformers, XGBoost, Optuna |
-| **Explainable AI (XAI)** | SHAP (Shapley Additive exPlanations), LIME, Custom Hybrid SHAP-LIME |
+| **Machine Learning & Deep Learning** | PyTorch, TensorFlow/Keras, scikit-learn, HuggingFace Transformers |
 | **Computer Vision** | OpenCV, NumPy, Matplotlib, SciPy |
 | **Natural Language Processing** | Marian NMT, SentencePiece, NLTK, HuggingFace Datasets |
 | **Data Science & Econometrics** | Pandas, NumPy, SciPy, Statsmodels, CausalInference (DiD, PSM) |
