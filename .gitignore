@@ -67,3 +67,9 @@ missfont.log
 # Ethics & Governance scripts and draft notebooks
 Ethics & Governance in AI/*.py
 Ethics & Governance in AI/*.ipynb
+
+# Mathematics for Machine Learning Textbook PDF
+# (Note: All exercise problem statements and theoretical questions in MML_Exercises/
+# are drawn directly from the text: "Mathematics for Machine Learning"
+# by Marc Peter Deisenroth, A. Aldo Faisal, and Cheng Soon Ong, Cambridge University Press)
+Sem 1/Maths4AI/Mathematics for Machine Learning*.pdf

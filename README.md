@@ -7,6 +7,7 @@
   <p align="center">
     <img src="https://img.shields.io/badge/Degree-MSc_Artificial_Intelligence-blue?style=for-the-badge" alt="Degree"/>
     <img src="https://img.shields.io/badge/University-JKUAT-green?style=for-the-badge" alt="University"/>
+    <img src="https://img.shields.io/badge/MML_Solutions-11_Notebooks_|_251_Cells-blueviolet?style=for-the-badge" alt="MML Solutions"/>
     <img src="https://img.shields.io/badge/Status-In_Progress:_Coursework_Ongoing-orange?style=for-the-badge" alt="Status"/>
   </p>
 </p>
@@ -22,7 +23,7 @@
     - [AI Algos](#ai-algos) — Core AI search strategies, fuzzy inference systems & agent pathfinding in unknown environments
     - [AI Applications](#ai-applications) — Econometric causal inference study (*The Marginal Utility of Police Force*) based on the Marginal_Utility_Police_Force repository
     - [Foundations of AI](#foundations-of-ai) — Strategic logistics optimisation report based on the Mixed-Integer Linear Programming (`MILP.ipynb`) PuLP implementation
-    - [Mathematics for AI (Maths4AI)](#mathematics-for-ai-maths4ai) — Mathematical rigor in linear algebra, multivariable calculus & probability theory
+    - [Mathematics for AI (Maths4AI)](#mathematics-for-ai-maths4ai) — Mathematical rigor, CAT solutions, complete 11-chapter MML computational suite & handbook cheatsheet
     - [ML Foundations](#ml-foundations) — Supervised & unsupervised learning, regularisation, Perceptrons, CATs & examination papers (Sec A & B)
     - [Python 4 AI](#python-4-ai) — Python programming fundamentals, data manipulation (Pandas/NumPy) & assignment solutions
   - [2. Semester 2 — Advanced Modules](#2-semester-2--advanced-modules)
@@ -58,7 +59,9 @@ Msc-AI-Coursework/
 │   ├── AI Algos/                       #   AI search algorithms, fuzzy logic & agent pathfinding
 │   ├── AI Applications/                #   Causal inference paper (Marginal Utility repo)
 │   ├── Foundations of AI/              #   Optimisation theory & Mixed-Integer Linear Programming
-│   ├── Maths4AI/                       #   Mathematics for AI continuous assessment
+│   ├── Maths4AI/                       #   Mathematics for AI continuous assessment & MML suite
+│   │   ├── Kinyua_Seaman_ CAT_Maths4AI.pdf # CAT examination solutions
+│   │   └── MML_Exercises/              #   Complete 11-chapter MML computational suite (251 cells) & cheatsheets
 │   ├── ML Foundations/                 #   Machine learning exams (Sec A & B), CATs & perceptron
 │   └── Python 4 AI/                   #   Python programming, data analysis & assignment solutions
 ├── Sem 2/                              # Semester 2 — Advanced AI modules
@@ -129,11 +132,38 @@ Analytical and computational optimisation for combinatorial decision-making.
 
 #### Mathematics for AI (Maths4AI)
 
-Mathematical foundations underpinning machine learning and probabilistic reasoning.
+Mathematical foundations underpinning machine learning, probabilistic reasoning, linear algebra, vector calculus, and continuous optimisation. This module encompasses academic examination submissions and a complete, from-scratch 11-chapter computational solutions suite for the foundational textbook ***Mathematics for Machine Learning*** (Deisenroth, Faisal & Ong, Cambridge University Press, 2020).
 
-| File | Topic / Description |
+| Coursework File / Directory | Topic / Description |
 |:--|:--|
-| `Kinyua_Seaman_ CAT_Maths4AI.pdf` | Continuous Assessment Test (CAT) covering vector spaces, matrix factorisations, multivariate gradient calculus, and probability distributions |
+| `Kinyua_Seaman_ CAT_Maths4AI.pdf` | **Continuous Assessment Test (CAT):** Vector spaces, matrix factorisations, multivariate gradient calculus, and probability distributions |
+| [`MML_Exercises/`](Sem%201/Maths4AI/MML_Exercises/) | **Complete MML Computational Solutions Suite:** 11 Jupyter notebooks (251 cells) implementing and proving all theoretical exercises across Chapters 2 to 12 |
+| [`MML_Book_Summary_Cheatsheet.md`](Sem%201/Maths4AI/MML_Exercises/MML_Book_Summary_Cheatsheet.md) | **Comprehensive MML Book Summary & Cheatsheet:** Exhaustive chapter-by-chapter theoretical handbook, key theorems, matrix calculus identities, and algorithms across all 12 chapters |
+
+> 📌 **Mathematics for Machine Learning (MML) Computational Suite Highlights:**
+>
+> All exercises are taken directly from the textbook **"Mathematics for Machine Learning"** by Marc Peter Deisenroth, A. Aldo Faisal, and Cheng Soon Ong (Cambridge University Press, 2020). The textbook PDF is excluded from version control via `.gitignore`, while each notebook maintains complete academic attribution.
+>
+> **Core Engineering & Parallel Architecture:**
+> - **Standalone Multi-Threaded Parallelism:** Computationally demanding simulations (e.g., 10,000-trial Bias-Variance Monte Carlo in Ch08, high-dimensional Dual PCA benchmarks in Ch10, 56-restart parallel EM model selection in Ch11, and 120-fold SVM cross-validation in Ch12) are parallelized directly in-notebook via `concurrent.futures.ThreadPoolExecutor`, delivering full multi-core performance while remaining 100% self-contained with zero external file dependencies.
+> - **Strict Zero-Warning Verification:** All 251 cells pass strict Python AST inspection with zero `SyntaxWarning` and zero `SyntaxError`.
+
+##### 📚 MML Exercise Notebooks Catalog (Chapters 2 to 12)
+
+| Notebook | Focus & Chapter Topic | Coverage | Cells | Mathematical & Algorithmic Highlights |
+|:---|:---|:---:|:---:|:---|
+| [`Ch02_Linear_Algebra.ipynb`](Sem%201/Maths4AI/MML_Exercises/Ch02_Linear_Algebra.ipynb) | Linear Algebra | Ex 2.1 – 2.20 | 50 | Gaussian elimination, vector spaces, linear independence, basis transformations, rank, kernel, matrix inverses. |
+| [`Ch03_Analytic_Geometry.ipynb`](Sem%201/Maths4AI/MML_Exercises/Ch03_Analytic_Geometry.ipynb) | Analytic Geometry | Ex 3.1 – 3.10 | 27 | Inner products, norms ($L_1, L_2, L_\infty$), Cauchy-Schwarz, orthogonal projections, Gram-Schmidt orthogonalisation, rotation matrices. |
+| [`Ch04_Matrix_Decompositions.ipynb`](Sem%201/Maths4AI/MML_Exercises/Ch04_Matrix_Decompositions.ipynb) | Matrix Decompositions | Ex 4.1 – 4.12 | 29 | Determinants, traces, characteristic polynomials, eigenvalues/eigenvectors, Cholesky, symmetric spectral theorem, SVD. |
+| [`Ch05_Vector_Calculus.ipynb`](Sem%201/Maths4AI/MML_Exercises/Ch05_Vector_Calculus.ipynb) | Vector Calculus | Ex 5.1 – 5.9 | 22 | Gradients, Jacobians, Hessians, multivariate chain rule, matrix calculus identities, Taylor series expansions. |
+| [`Ch06_Probability_Distributions.ipynb`](Sem%201/Maths4AI/MML_Exercises/Ch06_Probability_Distributions.ipynb) | Probability & Distributions | Ex 6.1 – 6.13 | 29 | Bayes' theorem, marginal/conditional Gaussians, GMMs, change-of-variables, Probability Integral Transform (PIT), 10M-trial Monte Carlo. |
+| [`Ch07_Continuous_Optimization.ipynb`](Sem%201/Maths4AI/MML_Exercises/Ch07_Continuous_Optimization.ipynb) | Continuous Optimization | Ex 7.1 – 7.11 | 25 | Gradient descent with momentum, SGD, Lagrange multipliers, KKT conditions, LP/QP duality, smoothed hinge loss. |
+| [`Ch08_When_Models_Meet_Data.ipynb`](Sem%201/Maths4AI/MML_Exercises/Ch08_When_Models_Meet_Data.ipynb) | When Models Meet Data | Ex 8.1 – 8.5 | 15 | ERM loss surfaces ($L_1, L_2$, Huber), MLE vs MAP under conjugate priors, DAGs and d-separation collider Explaining Away, 10,000-trial parallel Bias-Variance decomposition, AIC/BIC model selection. |
+| [`Ch09_Linear_Regression.ipynb`](Sem%201/Maths4AI/MML_Exercises/Ch09_Linear_Regression.ipynb) | Linear Regression | Ex 9.1 – 9.4 | 12 | Normal equations & orthogonal projection geometry ($\boldsymbol{\Phi}^\top \boldsymbol{e} = \boldsymbol{0}$), MAP Ridge regression & effective degrees of freedom $\operatorname{df}(\lambda)$, sequential Bayesian regression updating, parallel 5-fold CV. |
+| [`Ch10_PCA.ipynb`](Sem%201/Maths4AI/MML_Exercises/Ch10_PCA.ipynb) | Principal Component Analysis | Ex 10.1 – 10.5 | 15 | Dual Lagrangian derivations (Max Variance vs Min Error), centering/standardization impact, Eckart–Young–Mirsky theorem, high-dimensional Dual PCA benchmark up to $D=12,000$ (>980x speedup), Probabilistic PCA (PPCA). |
+| [`Ch11_GMM.ipynb`](Sem%201/Maths4AI/MML_Exercises/Ch11_GMM.ipynb) | Gaussian Mixture Models | Ex 11.1 – 11.4 | 11 | EM algorithm from scratch & ELBO monotonicity, hard EM K-Means limit as $\sigma^2 \to 0$, parallel 56-restart BIC/AIC model selection ($K^*=3$), Spherical vs Diagonal vs Full covariance hierarchy. |
+| [`Ch12_SVM.ipynb`](Sem%201/Maths4AI/MML_Exercises/Ch12_SVM.ipynb) | Support Vector Machines | Ex 12.1 – 12.4 | 16 | Hard-margin QP & KKT complementary slackness, soft-margin SVM & subgradient descent from scratch, parallel 5-fold CV RBF kernel grid search (100% accuracy), Mercer's theorem & SymPy 6D polynomial feature map proof. |
+
 
 #### ML Foundations
 
@@ -311,11 +341,13 @@ ca_ai/
 | Category | Technologies |
 |:--|:--|
 | **Languages** | Python 3.10+ |
+| **Mathematics & Symbolic Computing** | SymPy (Symbolic calculus & proofs), NumPy (Linear algebra & tensor ops), SciPy (SLSQP optimization, numerical integration, statistical distributions) |
+| **Parallel & High-Performance Computing** | Concurrency & Multithreading (`concurrent.futures.ThreadPoolExecutor`), `psutil` (hardware resource monitoring) |
 | **Machine Learning & Deep Learning** | PyTorch, TensorFlow/Keras, scikit-learn, HuggingFace Transformers |
 | **Computer Vision** | OpenCV, NumPy, Matplotlib, SciPy |
 | **Natural Language Processing** | Marian NMT, SentencePiece, NLTK, HuggingFace Datasets |
 | **Data Science & Econometrics** | Pandas, NumPy, SciPy, Statsmodels, CausalInference (DiD, PSM) |
-| **Optimisation** | PuLP (MILP), scikit-fuzzy |
+| **Optimisation** | PuLP (MILP), SciPy SLSQP (Dual QP/LP), scikit-fuzzy |
 | **Robotics Simulation** | Custom differential kinematics & 2D LiDAR SLAM (NumPy, Matplotlib) |
 | **Backend & Architecture** | FastAPI, Azure AI Search, Clean Architecture (CompanionAI) |
 | **Package Management** | uv, pip |
@@ -352,6 +384,10 @@ source .venv/bin/activate
 ```bash
 # Launch Jupyter to explore notebooks across Sem 1 and Sem 2
 jupyter notebook
+
+# Launch and run any Mathematics for Machine Learning (MML) notebook directly (Semester 1)
+cd "Sem 1/Maths4AI/MML_Exercises"
+jupyter notebook Ch10_PCA.ipynb
 
 # Run the SLAM Robotics Simulation (Semester 2)
 cd "Sem 2/Robotics"
