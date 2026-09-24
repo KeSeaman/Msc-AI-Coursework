@@ -176,6 +176,7 @@ A norm $\|\cdot\|: V \to \mathbb{R}$ quantifies vector length and satisfies:
 - **$L_p$-Norm:**
 
 $$\|\boldsymbol{x}\|_p = \left(\sum_{i=1}^D |x_i|^p\right)^{1/p}$$
+
   - $L_1$-Norm (Manhattan): $\|\boldsymbol{x}\|_1 = \sum |x_i|$ (promotes sparsity, Lasso regularization).
   - $L_2$-Norm (Euclidean): $\|\boldsymbol{x}\|_2 = \sqrt{\sum x_i^2} = \sqrt{\boldsymbol{x}^\top \boldsymbol{x}}$ (smooth, rotationally invariant, Ridge regularization).
   - $L_\infty$-Norm (Chebyshev / Max): $\|\boldsymbol{x}\|_\infty = \max_i |x_i|$.
@@ -302,7 +303,7 @@ where $\boldsymbol{\Sigma}^\dagger$ is formed by replacing all non-zero singular
 > **Companion Notebook:** [`Ch05_Vector_Calculus.ipynb`](Ch05_Vector_Calculus.ipynb) &bull; 22 cells &bull; Exercises 5.1 to 5.9
 
 > 📖 **Chapter Overview & Core Narrative:**  
-> Chapter 5 develops differential calculus on multi-dimensional manifolds and matrix spaces, constructing the core analytical machinery that enables gradient-based optimization throughout machine learning. It generalizes univariate differentiation to gradients of scalar fields, Jacobian matrices of vector-valued mappings, and Hessian matrices that capture curvature and local convexity. Crucially, the chapter formalizes the multivariate chain rule and reverse-mode automatic differentiation (backpropagation), proving why computing vector-Jacobian products from output to input scales linearly ($\mathcal{O}(P)$) rather than quadratically with network parameter counts. It concludes with essential matrix calculus identities for traces, determinants, and quadratic forms, providing the exact derivation tools needed to compute analytical gradients for maximum likelihood and regularized loss objectives.
+> Chapter 5 develops differential calculus on multi-dimensional manifolds and matrix spaces, constructing the core analytical machinery that enables gradient-based optimization throughout machine learning. It generalizes univariate differentiation to gradients of scalar fields, Jacobian matrices of vector-valued mappings, and Hessian matrices that capture curvature and local convexity. Crucially, the chapter formalizes the multivariate chain rule and reverse-mode automatic differentiation (backpropagation), proving why computing vector-Jacobian products from output to input scales linearly $(\mathcal{O}(P))$ rather than quadratically with network parameter counts. It concludes with essential matrix calculus identities for traces, determinants, and quadratic forms, providing the exact derivation tools needed to compute analytical gradients for maximum likelihood and regularized loss objectives.
 
 #### 1. Gradients, Jacobians & Hessians
 - **Gradient (Scalar field $f: \mathbb{R}^D \to \mathbb{R}$):** Column vector of partial derivatives:
@@ -327,7 +328,7 @@ For composite function $\boldsymbol{f}(\boldsymbol{g}(\boldsymbol{x}))$ where $\
 
 $$\frac{\partial \boldsymbol{f}}{\partial \boldsymbol{x}} = \frac{\partial \boldsymbol{f}}{\partial \boldsymbol{g}} \frac{\partial \boldsymbol{g}}{\partial \boldsymbol{x}} \quad \iff \quad \boldsymbol{J}_{\boldsymbol{f} \circ \boldsymbol{g}} = \boldsymbol{J}_{\boldsymbol{f}} \boldsymbol{J}_{\boldsymbol{g}}$$
 
-- **Reverse-Mode AD (Backpropagation):** Computes Vector-Jacobian Products (VJPs) from output to input. For neural networks with scalar loss $L \in \mathbb{R}$ and millions of parameters $\boldsymbol{\theta} \in \mathbb{R}^P$, reverse-mode requires **1 backward sweep** ($\mathcal{O}(P)$), whereas forward-mode would require $P$ passes ($\mathcal{O}(P^2)$).
+- **Reverse-Mode AD (Backpropagation):** Computes Vector-Jacobian Products (VJPs) from output to input. For neural networks with scalar loss $L \in \mathbb{R}$ and millions of parameters $\boldsymbol{\theta} \in \mathbb{R}^P$, reverse-mode requires **1 backward sweep** $(\mathcal{O}(P))$, whereas forward-mode would require $P$ passes $(\mathcal{O}(P^2))$.
 
 #### 3. Multivariate Taylor Series
 Taylor expansion of $f: \mathbb{R}^D \to \mathbb{R}$ around $\boldsymbol{x}_0$:
@@ -373,6 +374,7 @@ $$\boldsymbol{y} = \boldsymbol{A}\boldsymbol{x} + \boldsymbol{b} \implies \bolds
 Let the partitioned Gaussian vector be:
 
 $$\boldsymbol{x} = \begin{bmatrix}\boldsymbol{x}_a \\ \boldsymbol{x}_b\end{bmatrix} \sim \mathcal{N}\left(\begin{bmatrix}\boldsymbol{\mu}_a \\ \boldsymbol{\mu}_b\end{bmatrix}, \begin{bmatrix}\boldsymbol{\Sigma}_{aa} & \boldsymbol{\Sigma}_{ab} \\ \boldsymbol{\Sigma}_{ba} & \boldsymbol{\Sigma}_{bb}\end{bmatrix}\right)$$
+
   - **Marginal Distribution:**
 
 $$p(\boldsymbol{x}_a) = \mathcal{N}(\boldsymbol{\mu}_a, \boldsymbol{\Sigma}_{aa})$$
@@ -569,16 +571,20 @@ $$\sigma_{\ast}^2(\boldsymbol{x}_{\ast}) = \underbrace{\sigma^2}_{\textbf{Aleato
 > **Companion Notebook:** [`Ch10_PCA.ipynb`](Ch10_PCA.ipynb) &bull; 15 cells &bull; Exercises 10.1 to 10.5
 
 > 📖 **Chapter Overview & Core Narrative:**  
-> Chapter 10 investigates Principal Component Analysis (PCA) as the foundational unsupervised algorithm for dimensionality reduction, feature compression, and data visualization. The chapter demonstrates that two seemingly distinct mathematical objectives—maximizing the projected variance of data points along orthogonal directions, and minimizing the average squared reconstruction error between original vectors and low-rank reconstructions—yield the exact same linear algebraic solution: an eigendecomposition of the sample covariance matrix $\boldsymbol{S}$. It connects PCA to SVD and the Eckart–Young–Mirsky low-rank theorem, introduces the dual Gram-matrix trick ($\mathcal{O}(N^3)$ vs $\mathcal{O}(D^3)$) for high-dimensional regimes where $D \gg N$, and concludes with Probabilistic PCA (PPCA), framing dimensionality reduction as a generative latent variable model solved via maximum likelihood.
+> Chapter 10 investigates Principal Component Analysis (PCA) as the foundational unsupervised algorithm for dimensionality reduction, feature compression, and data visualization. The chapter demonstrates that two seemingly distinct mathematical objectives—maximizing the projected variance of data points along orthogonal directions, and minimizing the average squared reconstruction error between original vectors and low-rank reconstructions—yield the exact same linear algebraic solution: an eigendecomposition of the sample covariance matrix $\boldsymbol{S}$. It connects PCA to SVD and the Eckart–Young–Mirsky low-rank theorem, introduces the dual Gram-matrix trick $(\mathcal{O}(N^3) \text{ vs } \mathcal{O}(D^3))$ for high-dimensional regimes where $D \gg N$, and concludes with Probabilistic PCA (PPCA), framing dimensionality reduction as a generative latent variable model solved via maximum likelihood.
 
 #### 1. Two Complementary Perspectives
 Given centered dataset $\tilde{\boldsymbol{x}}_n = \boldsymbol{x}_n - \boldsymbol{\mu} \in \mathbb{R}^D$ with sample covariance matrix:
 
 $$\boldsymbol{S} = \frac{1}{N}\sum_{n=1}^N \tilde{\boldsymbol{x}}_n \tilde{\boldsymbol{x}}_n^\top$$
+
 1. **Maximum Projected Variance:** Find orthonormal axes $\boldsymbol{b}_1, \dots, \boldsymbol{b}_M$ maximizing variance:
-   $$\max_{\|\boldsymbol{b}_1\|=1} \boldsymbol{b}_1^\top \boldsymbol{S}\boldsymbol{b}_1 \implies \boldsymbol{S}\boldsymbol{b}_1 = \lambda_1 \boldsymbol{b}_1$$
+
+$$\max_{\Vert\boldsymbol{b}_1\Vert=1} \boldsymbol{b}_1^\top \boldsymbol{S}\boldsymbol{b}_1 \implies \boldsymbol{S}\boldsymbol{b}_1 = \lambda_1 \boldsymbol{b}_1$$
+
 2. **Minimum Reconstruction Error:** Find $M$-dimensional subspace minimizing average squared Euclidean distance between data points $\tilde{\boldsymbol{x}}_n$ and reconstructions $\hat{\boldsymbol{x}}_n = \boldsymbol{B}\boldsymbol{z}_n$:
-   $$\min_{\boldsymbol{B}} \frac{1}{N}\sum_{n=1}^N \|\tilde{\boldsymbol{x}}_n - \boldsymbol{B}\boldsymbol{B}^\top \tilde{\boldsymbol{x}}_n\|^2 \implies \text{Error} = \sum_{j=M+1}^D \lambda_j$$
+
+$$\min_{\boldsymbol{B}} \frac{1}{N}\sum_{n=1}^N \Vert\tilde{\boldsymbol{x}}_n - \boldsymbol{B}\boldsymbol{B}^\top \tilde{\boldsymbol{x}}_n\Vert^2 \implies \text{Error} = \sum_{j=M+1}^D \lambda_j$$
 
 Both formulations lead to the **exact same eigenvalue problem**: Choose the $M$ eigenvectors of $\boldsymbol{S}$ corresponding to the $M$ largest eigenvalues.
 
