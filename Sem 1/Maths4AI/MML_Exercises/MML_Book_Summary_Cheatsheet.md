@@ -79,7 +79,7 @@ The book is partitioned into two complementary halves:
 
 | Part II Algorithm | Linear Algebra (Ch 2) | Analytic Geometry (Ch 3) | Matrix Decomp. (Ch 4) | Vector Calculus (Ch 5) | Probability (Ch 6) | Continuous Optim. (Ch 7) |
 |:---|:---:|:---:|:---:|:---:|:---:|:---:|
-| **Linear Regression (Ch 9)** | System $\boldsymbol{\Phi}^\top \boldsymbol{\Phi}\boldsymbol{\theta} = \boldsymbol{\Phi}^\top \boldsymbol{y}$ | Orthogonal Projector $\boldsymbol{P}_\pi$ | SVD shrinkage $\frac{\sigma_i^2}{\sigma_i^2+\lambda}$ | $\nabla_{\boldsymbol{\theta}}\|\boldsymbol{y} - \boldsymbol{\Phi}\boldsymbol{\theta}\|^2$ | Gaussian conjugate prior / posterior | Convex quadratic objective |
+| **Linear Regression (Ch 9)** | System $\boldsymbol{\Phi}^\top \boldsymbol{\Phi}\boldsymbol{\theta} = \boldsymbol{\Phi}^\top \boldsymbol{y}$ | Orthogonal Projector $\boldsymbol{P}$ | SVD shrinkage $\frac{\sigma_i^2}{\sigma_i^2 + \lambda}$ | $\nabla_{\boldsymbol{\theta}}\|\boldsymbol{y} - \boldsymbol{\Phi}\boldsymbol{\theta}\|^2$ | Gaussian conjugate prior / posterior | Convex quadratic objective |
 | **PCA (Ch 10)** | Basis transformation | Orthonormal basis & projection | SVD & Spectral Theorem ($\boldsymbol{S} = \boldsymbol{Q}\boldsymbol{\Lambda}\boldsymbol{Q}^\top$) | Derivative of Rayleigh quotient | Probabilistic PCA (PPCA) | Lagrangian with $\|\boldsymbol{b}\|^2 = 1$ |
 | **GMMs (Ch 11)** | Linear transformations | Mahalanobis metric $(\boldsymbol{x}-\boldsymbol{\mu})^\top \boldsymbol{\Sigma}^{-1}(\boldsymbol{x}-\boldsymbol{\mu})$ | Cholesky of Covariance $\boldsymbol{\Sigma} = \boldsymbol{L}\boldsymbol{L}^\top$ | Gradient of complete-data log-likelihood | Multivariate Normal, Bayes, Marginalization | Constrained optimization ($\sum \pi_k = 1$), ELBO |
 | **SVMs (Ch 12)** | Affine hyperplanes | Geometric margin $\frac{2}{\|\boldsymbol{w}\|}$ | Kernel Gram matrix positive semi-definiteness | Subgradient descent of Hinge loss | Maximum margin as robust estimation | Dual Quadratic Program & KKT conditions |
@@ -98,7 +98,7 @@ The book is partitioned into two complementary halves:
 #### Core Concepts & Intuition
 - **Data as Vectors:** An object (image, text embedding, audio sample, sensor readout) is represented as a point $\boldsymbol{x} \in \mathbb{R}^D$ in a high-dimensional vector space.
 - **Models as Functions:** A hypothesis $f(\boldsymbol{x}; \boldsymbol{\theta})$ parameterized by $\boldsymbol{\theta}$ maps inputs to predictions or probability densities.
-- **Learning as Parameter Search:** Finding the parameter vector $\boldsymbol{\theta}^*$ that minimizes an empirical loss function or maximizes a posterior likelihood.
+- **Learning as Parameter Search:** Finding the parameter vector $\boldsymbol{\theta}^\star$ that minimizes an empirical loss function or maximizes a posterior likelihood.
 - **The Two Core Perspectives:**
   1. **Geometric View:** Focuses on distances, projections, angles, linear subspaces, and manifold structures in $\mathbb{R}^D$.
   2. **Probabilistic View:** Treats parameters and observations as random variables, modeling uncertainty, noise, likelihoods, and epistemic beliefs.
@@ -143,7 +143,7 @@ $$\sum_{i=1}^k \lambda_i \boldsymbol{x}_i = \boldsymbol{0} \iff \lambda_1 = \lam
 
 #### 3. Linear Mappings & Fundamental Spaces
 A mapping $\Phi: V \to W$ is linear if $\Phi(\lambda \boldsymbol{x} + \mu \boldsymbol{y}) = \lambda \Phi(\boldsymbol{x}) + \mu \Phi(\boldsymbol{y})$.
-- **Transformation Matrix:** Given ordered bases $B = (\boldsymbol{b}_1, \dots, \boldsymbol{b}_N)$ of $V$ and $C = (\boldsymbol{c}_1, \dots, \boldsymbol{c}_M)$ of $W$, $\Phi$ has a unique representation matrix $\boldsymbol{A}_\Phi \in \mathbb{R}^{M \times N}$.
+- **Transformation Matrix:** Given ordered bases $B = (\boldsymbol{b_1}, \dots, \boldsymbol{b_N})$ of $V$ and $C = (\boldsymbol{c_1}, \dots, \boldsymbol{c_M})$ of $W$, $\Phi$ has a unique representation matrix $\boldsymbol{A}_\Phi \in \mathbb{R}^{M \times N}$.
 - **Change of Basis:** If $\boldsymbol{S}$ transforms basis $B \to \tilde{B}$ in $V$ and $\boldsymbol{T}$ transforms $C \to \tilde{C}$ in $W$:
 
 $$\tilde{\boldsymbol{A}}_\Phi = \boldsymbol{T}^{-1}\boldsymbol{A}_\Phi \boldsymbol{S}$$
@@ -173,7 +173,9 @@ A norm $\|\cdot\|: V \to \mathbb{R}$ quantifies vector length and satisfies:
 2. Absolute homogeneity: $\|\lambda \boldsymbol{x}\| = |\lambda| \|\boldsymbol{x}\|$.
 3. Triangle inequality: $\|\boldsymbol{x} + \boldsymbol{y}\| \le \|\boldsymbol{x}\| + \|\boldsymbol{y}\|$.
 
-- **$L_p$-Norm:** $\|\boldsymbol{x}\|_p = \left(\sum_{i=1}^D |x_i|^p\right)^{1/p}$.
+- **$L_p$-Norm:**
+
+$$\|\boldsymbol{x}\|_p = \left(\sum_{i=1}^D |x_i|^p\right)^{1/p}$$
   - $L_1$-Norm (Manhattan): $\|\boldsymbol{x}\|_1 = \sum |x_i|$ (promotes sparsity, Lasso regularization).
   - $L_2$-Norm (Euclidean): $\|\boldsymbol{x}\|_2 = \sqrt{\sum x_i^2} = \sqrt{\boldsymbol{x}^\top \boldsymbol{x}}$ (smooth, rotationally invariant, Ridge regularization).
   - $L_\infty$-Norm (Chebyshev / Max): $\|\boldsymbol{x}\|_\infty = \max_i |x_i|$.
@@ -196,23 +198,23 @@ $$\cos \omega = \frac{\langle \boldsymbol{x}, \boldsymbol{y} \rangle}{\|\boldsym
 
 #### 3. Orthogonal Projections
 Projecting an arbitrary vector $\boldsymbol{x} \in \mathbb{R}^D$ onto a subspace $U = \text{span}(\boldsymbol{B})$ where columns of $\boldsymbol{B} = [\boldsymbol{b}_1, \dots, \boldsymbol{b}_M] \in \mathbb{R}^{D \times M}$ form a basis:
-- **Projection Coordinates $\boldsymbol{\lambda}^* \in \mathbb{R}^{M}$:**
+- **Projection Coordinates $\boldsymbol{\lambda}^\star \in \mathbb{R}^{M}$:**
 
-$$\boldsymbol{\lambda}^* = (\boldsymbol{B}^\top \boldsymbol{B})^{-1}\boldsymbol{B}^\top \boldsymbol{x}$$
+$$\boldsymbol{\lambda}^\star = (\boldsymbol{B}^\top \boldsymbol{B})^{-1}\boldsymbol{B}^\top \boldsymbol{x}$$
 
 - **Projected Vector $\pi_U(\boldsymbol{x}) \in \mathbb{R}^D$:**
 
-$$\pi_U(\boldsymbol{x}) = \boldsymbol{B}\boldsymbol{\lambda}^* = \boldsymbol{B}(\boldsymbol{B}^\top \boldsymbol{B})^{-1}\boldsymbol{B}^\top \boldsymbol{x}$$
+$$\pi_U(\boldsymbol{x}) = \boldsymbol{B}\boldsymbol{\lambda}^\star = \boldsymbol{B}(\boldsymbol{B}^\top \boldsymbol{B})^{-1}\boldsymbol{B}^\top \boldsymbol{x}$$
 
 - **Orthogonal Projection Matrix $\boldsymbol{P}_\pi$:**
 
 $$\boldsymbol{P}_\pi = \boldsymbol{B}(\boldsymbol{B}^\top \boldsymbol{B})^{-1}\boldsymbol{B}^\top$$
 
 > [!TIP]
-> **Properties of Projection Matrices:**
-> 1. **Idempotence:** $\boldsymbol{P}_\pi^2 = \boldsymbol{P}_\pi$ (projecting twice does not alter the projection).
-> 2. **Symmetry:** $\boldsymbol{P}_\pi^\top = \boldsymbol{P}_\pi$ (for orthogonal projections).
-> 3. **Orthogonality of Error:** The residual vector $\boldsymbol{e} = \boldsymbol{x} - \boldsymbol{P}_\pi \boldsymbol{x}$ satisfies $\boldsymbol{B}^\top \boldsymbol{e} = \boldsymbol{0}$.
+> **Properties of Projection Matrices ($\boldsymbol{P} = \boldsymbol{P}_\pi$):**
+> 1. **Idempotence:** $\boldsymbol{P}^2 = \boldsymbol{P}$ (projecting twice does not alter the projection).
+> 2. **Symmetry:** $\boldsymbol{P}^\top = \boldsymbol{P}$ (for orthogonal projections).
+> 3. **Orthogonality of Error:** The residual vector $\boldsymbol{e} = \boldsymbol{x} - \boldsymbol{P}\boldsymbol{x}$ satisfies $\boldsymbol{B}^\top \boldsymbol{e} = \boldsymbol{0}$.
 
 #### 4. Gram-Schmidt Orthonormalization
 Given a basis $(\boldsymbol{v}_1, \dots, \boldsymbol{v}_M)$, construct an orthonormal basis $(\boldsymbol{u}_1, \dots, \boldsymbol{u}_M)$:
@@ -280,7 +282,9 @@ The optimal rank-$k$ approximation ($k < r$) to $\boldsymbol{A}$ under both the 
 
 $$\boldsymbol{A}_k = \sum_{i=1}^k \sigma_i \boldsymbol{u}_i \boldsymbol{v}_i^\top = \arg\min_{\text{rank}(\boldsymbol{B}) \le k} \|\boldsymbol{A} - \boldsymbol{B}\|$$
 
-- Reconstruction error: $\|\boldsymbol{A} - \boldsymbol{A}_k\|_2 = \sigma_{k+1}$, and $\|\boldsymbol{A} - \boldsymbol{A}_k\|_F^2 = \sum_{i=k+1}^r \sigma_i^2$.
+- **Reconstruction Error:**
+
+$$\|\boldsymbol{A} - \boldsymbol{A}_k\|_2 = \sigma_{k+1}, \qquad \|\boldsymbol{A} - \boldsymbol{A}_k\|_F^2 = \sum_{i=k+1}^r \sigma_i^2$$
 
 #### 6. Moore-Penrose Pseudoinverse
 For an arbitrary matrix $\boldsymbol{A} = \boldsymbol{U}\boldsymbol{\Sigma}\boldsymbol{V}^\top$:
@@ -366,7 +370,9 @@ $$p(\boldsymbol{x} \mid \boldsymbol{\mu}, \boldsymbol{\Sigma}) = \frac{1}{(2\pi)
 $$\boldsymbol{y} = \boldsymbol{A}\boldsymbol{x} + \boldsymbol{b} \implies \boldsymbol{y} \sim \mathcal{N}(\boldsymbol{A}\boldsymbol{\mu} + \boldsymbol{b}, \boldsymbol{A}\boldsymbol{\Sigma}\boldsymbol{A}^\top)$$
 
 - **Marginalization and Conditioning of Joint Gaussians:**
-Let $\boldsymbol{x} = \begin{bmatrix}\boldsymbol{x}_a \\ \boldsymbol{x}_b\end{bmatrix} \sim \mathcal{N}\left(\begin{bmatrix}\boldsymbol{\mu}_a \\ \boldsymbol{\mu}_b\end{bmatrix}, \begin{bmatrix}\boldsymbol{\Sigma}_{aa} & \boldsymbol{\Sigma}_{ab} \\ \boldsymbol{\Sigma}_{ba} & \boldsymbol{\Sigma}_{bb}\end{bmatrix}\right)$.
+Let the partitioned Gaussian vector be:
+
+$$\boldsymbol{x} = \begin{bmatrix}\boldsymbol{x}_a \\ \boldsymbol{x}_b\end{bmatrix} \sim \mathcal{N}\left(\begin{bmatrix}\boldsymbol{\mu}_a \\ \boldsymbol{\mu}_b\end{bmatrix}, \begin{bmatrix}\boldsymbol{\Sigma}_{aa} & \boldsymbol{\Sigma}_{ab} \\ \boldsymbol{\Sigma}_{ba} & \boldsymbol{\Sigma}_{bb}\end{bmatrix}\right)$$
   - **Marginal Distribution:**
 
 $$p(\boldsymbol{x}_a) = \mathcal{N}(\boldsymbol{\mu}_a, \boldsymbol{\Sigma}_{aa})$$
@@ -380,7 +386,7 @@ $$\boldsymbol{\mu}_{a|b} = \boldsymbol{\mu}_a + \boldsymbol{\Sigma}_{ab}\boldsym
 $$\boldsymbol{\Sigma}_{a|b} = \boldsymbol{\Sigma}_{aa} - \boldsymbol{\Sigma}_{ab}\boldsymbol{\Sigma}_{bb}^{-1}\boldsymbol{\Sigma}_{ba}$$
 
 > [!NOTE]
-> The term $\boldsymbol{\Sigma}_{a|b}$ is the **Schur complement** of $\boldsymbol{\Sigma}_{bb}$ in $\boldsymbol{\Sigma}$. Notice that $\boldsymbol{\Sigma}_{a|b}$ is completely independent of the observed value $\boldsymbol{x}_b$!
+> The term $\boldsymbol{\Sigma_{a|b}}$ is the **Schur complement** of $\boldsymbol{\Sigma_{bb}}$ in $\boldsymbol{\Sigma}$. Notice that $\boldsymbol{\Sigma_{a|b}}$ is completely independent of the observed value $\boldsymbol{x_b}$!
 
 #### 3. Conjugacy & Exponential Families
 - **Conjugate Prior:** A prior $p(\boldsymbol{\theta})$ is conjugate to the likelihood $p(\mathcal{D}|\boldsymbol{\theta})$ if the posterior $p(\boldsymbol{\theta}|\mathcal{D})$ belongs to the same family of distributions as the prior.
@@ -407,11 +413,11 @@ $$p_{\boldsymbol{Y}}(\boldsymbol{y}) = p_{\boldsymbol{X}}(\boldsymbol{g}^{-1}(\b
 > Chapter 7 addresses continuous numerical optimization, bridging mathematical formulations to computable algorithms by exploring how to locate optimal parameter vectors in unconstrained and constrained objective landscapes. Beginning with first-order and second-order stationarity conditions, it analyzes gradient descent, heavy-ball momentum, and stochastic gradient descent (SGD), explaining how mini-batch gradient estimators navigate high-dimensional non-convex loss surfaces. The chapter then tackles constrained optimization via the method of Lagrange multipliers, proves the four Karush–Kuhn–Tucker (KKT) conditions governing inequality constraints and complementary slackness, and develops Lagrangian duality theory (weak and strong duality under Slater's condition), establishing the exact mathematical scaffolding required for quadratic programming, linear programming, and dual Support Vector Machines.
 
 #### 1. Unconstrained Optimization & Gradient Descent
-- **First-Order Necessary Condition:** $\nabla f(\boldsymbol{x}^*) = \boldsymbol{0}$ (stationary point).
-- **Second-Order Sufficient Condition:** $\nabla^2 f(\boldsymbol{x}^*) \succ 0$ (strict local minimum).
+- **First-Order Necessary Condition:** $\nabla f(\boldsymbol{x}^\star) = \boldsymbol{0}$ (stationary point).
+- **Second-Order Sufficient Condition:** $\nabla^2 f(\boldsymbol{x}^\star) \succ 0$ (strict local minimum).
 - **Gradient Descent Updates:**
-  - Standard GD: $\boldsymbol{x}_{t+1} = \boldsymbol{x}_t - \gamma \nabla f(\boldsymbol{x}_t)$.
-  - Heavy-Ball Momentum: $\boldsymbol{v}_{t+1} = \beta \boldsymbol{v}_t + \gamma \nabla f(\boldsymbol{x}_t)$, $\boldsymbol{x}_{t+1} = \boldsymbol{x}_t - \boldsymbol{v}_{t+1}$.
+  - Standard GD: $\boldsymbol{x_{t+1}} = \boldsymbol{x_t} - \gamma \nabla f(\boldsymbol{x_t})$.
+  - Heavy-Ball Momentum: $\boldsymbol{v_{t+1}} = \beta \boldsymbol{v_t} + \gamma \nabla f(\boldsymbol{x_t})$, $\boldsymbol{x_{t+1}} = \boldsymbol{x_t} - \boldsymbol{v_{t+1}}$.
   - Stochastic Gradient Descent (SGD): Uses single-sample or mini-batch unbiased gradient estimate $\mathbb{E}[\nabla f_i(\boldsymbol{x})] = \nabla f(\boldsymbol{x})$.
 
 #### 2. Constrained Optimization & Karush-Kuhn-Tucker (KKT) Conditions
@@ -428,32 +434,32 @@ where $\lambda_i \ge 0$ are the KKT multipliers for inequality constraints and $
 #### The 4 KKT Conditions (Necessary for local optimality; sufficient under convexity):
 1. **Stationarity:**
 
-$$\nabla_{\boldsymbol{x}}\mathcal{L}(\boldsymbol{x}^*, \boldsymbol{\lambda}^*, \boldsymbol{\nu}^*) = \nabla f(\boldsymbol{x}^*) + \sum_{i=1}^m \lambda_i^* \nabla g_i(\boldsymbol{x}^*) + \sum_{j=1}^p \nu_j^* \nabla h_j(\boldsymbol{x}^*) = \boldsymbol{0}$$
+$$\nabla_{\boldsymbol{x}}\mathcal{L}(\boldsymbol{x}^\star, \boldsymbol{\lambda}^\star, \boldsymbol{\nu}^\star) = \nabla f(\boldsymbol{x}^\star) + \sum_{i=1}^m \lambda_i^\star \nabla g_i(\boldsymbol{x}^\star) + \sum_{j=1}^p \nu_j^\star \nabla h_j(\boldsymbol{x}^\star) = \boldsymbol{0}$$
 
 2. **Primal Feasibility:**
 
-$$g_i(\boldsymbol{x}^*) \le 0 \quad (\forall i=1,\dots,m), \quad h_j(\boldsymbol{x}^*) = 0 \quad (\forall j=1,\dots,p)$$
+$$g_i(\boldsymbol{x}^\star) \le 0 \quad (\forall i=1,\dots,m), \quad h_j(\boldsymbol{x}^\star) = 0 \quad (\forall j=1,\dots,p)$$
 
 3. **Dual Feasibility:**
 
-$$\lambda_i^* \ge 0 \quad (\forall i=1,\dots,m)$$
+$$\lambda_i^\star \ge 0 \quad (\forall i=1,\dots,m)$$
 
 4. **Complementary Slackness:**
 
-$$\lambda_i^* g_i(\boldsymbol{x}^*) = 0 \quad (\forall i=1,\dots,m)$$
+$$\lambda_i^\star g_i(\boldsymbol{x}^\star) = 0 \quad (\forall i=1,\dots,m)$$
 
 > [!IMPORTANT]
 > **Complementary Slackness Meaning:**  
 > For each inequality constraint $i$, either:
-> - $\lambda_i^* = 0$: The constraint is **inactive** ($g_i(\boldsymbol{x}^*) < 0$). Removing the constraint has no local effect.
-> - $g_i(\boldsymbol{x}^*) = 0$: The constraint is **active** (lies strictly on boundary), and $\lambda_i^* \ge 0$.  
+> - $\lambda_i^\star = 0$: The constraint is **inactive** ($g_i(\boldsymbol{x}^\star) < 0$). Removing the constraint has no local effect.
+> - $g_i(\boldsymbol{x}^\star) = 0$: The constraint is **active** (lies strictly on boundary), and $\lambda_i^\star \ge 0$.  
 > This directly underpins the concept of **Support Vectors** in Chapter 12!
 
 #### 3. Duality Theory
 - **Lagrange Dual Function:** $g(\boldsymbol{\lambda}, \boldsymbol{\nu}) = \inf_{\boldsymbol{x}} \mathcal{L}(\boldsymbol{x}, \boldsymbol{\lambda}, \boldsymbol{\nu})$ is always concave, even if $f$ is non-convex.
 - **Dual Problem:** $\max_{\boldsymbol{\lambda} \ge \boldsymbol{0}, \boldsymbol{\nu}} g(\boldsymbol{\lambda}, \boldsymbol{\nu})$.
-- **Weak Duality:** $d^* \le p^*$ (Dual optimal is always a lower bound on primal optimal).
-- **Strong Duality ($d^* = p^*$):** Zero duality gap. Holds when the primal problem is convex and **Slater's condition** is satisfied (there exists a strictly feasible point $\boldsymbol{x}$ such that $g_i(\boldsymbol{x}) < 0$ for all non-affine inequalities).
+- **Weak Duality:** $d^\star \le p^\star$ (Dual optimal is always a lower bound on primal optimal).
+- **Strong Duality ($d^\star = p^\star$):** Zero duality gap. Holds when the primal problem is convex and **Slater's condition** is satisfied (there exists a strictly feasible point $\boldsymbol{x}$ such that $g_i(\boldsymbol{x}) < 0$ for all non-affine inequalities).
 
 ---
 
@@ -548,13 +554,13 @@ $$\boldsymbol{S}_N^{-1} = \boldsymbol{S}_0^{-1} + \sigma^{-2}\boldsymbol{\Phi}^\
 
 $$\boldsymbol{m}_N = \boldsymbol{S}_N\left(\boldsymbol{S}_0^{-1}\boldsymbol{m}_0 + \sigma^{-2}\boldsymbol{\Phi}^\top \boldsymbol{y}\right)$$
 
-- **Posterior Predictive Distribution for a new query point $\boldsymbol{x}_*$:**
+- **Posterior Predictive Distribution for a new query point $\boldsymbol{x}_{\ast}$:**
 
-$$p(y_* \mid \boldsymbol{x}_*, \mathcal{D}) = \mathcal{N}\left(\boldsymbol{\phi}(\boldsymbol{x}_*)^\top \boldsymbol{m}_N, \; \sigma_*^2(\boldsymbol{x}_*)\right)$$
+$$p(y_{\ast} \mid \boldsymbol{x}_{\ast}, \mathcal{D}) = \mathcal{N}\left(\boldsymbol{\phi}(\boldsymbol{x}_{\ast})^\top \boldsymbol{m}_N, \; \sigma_{\ast}^2(\boldsymbol{x}_{\ast})\right)$$
 
-$$\sigma_*^2(\boldsymbol{x}_*) = \underbrace{\sigma^2}_{\textbf{Aleatoric Noise}} + \underbrace{\boldsymbol{\phi}(\boldsymbol{x}_*)^\top \boldsymbol{S}_N \boldsymbol{\phi}(\boldsymbol{x}_*)}_{\textbf{Epistemic Parameter Uncertainty}}$$
+$$\sigma_{\ast}^2(\boldsymbol{x}_{\ast}) = \underbrace{\sigma^2}_{\textbf{Aleatoric Noise}} + \underbrace{\boldsymbol{\phi}(\boldsymbol{x}_{\ast})^\top \boldsymbol{S}_N \boldsymbol{\phi}(\boldsymbol{x}_{\ast})}_{\textbf{Epistemic Parameter Uncertainty}}$$
 
-> As $N \to \infty$, epistemic uncertainty $\boldsymbol{\phi}(\boldsymbol{x}_*)^\top \boldsymbol{S}_N \boldsymbol{\phi}(\boldsymbol{x}_*) \to 0$, leaving only irreducible noise $\sigma^2$.
+> As sample size $N \to \infty$, parameter covariance $\boldsymbol{S}_N \to \boldsymbol{0}$, so epistemic uncertainty vanishes and total predictive variance converges to irreducible noise $\sigma^2$.
 
 ---
 
@@ -566,10 +572,12 @@ $$\sigma_*^2(\boldsymbol{x}_*) = \underbrace{\sigma^2}_{\textbf{Aleatoric Noise}
 > Chapter 10 investigates Principal Component Analysis (PCA) as the foundational unsupervised algorithm for dimensionality reduction, feature compression, and data visualization. The chapter demonstrates that two seemingly distinct mathematical objectives—maximizing the projected variance of data points along orthogonal directions, and minimizing the average squared reconstruction error between original vectors and low-rank reconstructions—yield the exact same linear algebraic solution: an eigendecomposition of the sample covariance matrix $\boldsymbol{S}$. It connects PCA to SVD and the Eckart–Young–Mirsky low-rank theorem, introduces the dual Gram-matrix trick ($\mathcal{O}(N^3)$ vs $\mathcal{O}(D^3)$) for high-dimensional regimes where $D \gg N$, and concludes with Probabilistic PCA (PPCA), framing dimensionality reduction as a generative latent variable model solved via maximum likelihood.
 
 #### 1. Two Complementary Perspectives
-Given centered dataset $\tilde{\boldsymbol{x}}_n = \boldsymbol{x}_n - \boldsymbol{\mu} \in \mathbb{R}^D$ with sample covariance $\boldsymbol{S} = \frac{1}{N}\sum_{n=1}^N \tilde{\boldsymbol{x}}_n \tilde{\boldsymbol{x}}_n^\top$:
+Given centered dataset $\tilde{\boldsymbol{x}}_n = \boldsymbol{x}_n - \boldsymbol{\mu} \in \mathbb{R}^D$ with sample covariance matrix:
+
+$$\boldsymbol{S} = \frac{1}{N}\sum_{n=1}^N \tilde{\boldsymbol{x}}_n \tilde{\boldsymbol{x}}_n^\top$$
 1. **Maximum Projected Variance:** Find orthonormal axes $\boldsymbol{b}_1, \dots, \boldsymbol{b}_M$ maximizing variance:
    $$\max_{\|\boldsymbol{b}_1\|=1} \boldsymbol{b}_1^\top \boldsymbol{S}\boldsymbol{b}_1 \implies \boldsymbol{S}\boldsymbol{b}_1 = \lambda_1 \boldsymbol{b}_1$$
-2. **Minimum Reconstruction Error:** Find $M$-dimensional subspace minimizing average squared Euclidean distance between original points and reconstructions $\tilde{\boldsymbol{x}}_n \approx \sum_{m=1}^M z_{nm}\boldsymbol{b}_m$:
+2. **Minimum Reconstruction Error:** Find $M$-dimensional subspace minimizing average squared Euclidean distance between data points $\tilde{\boldsymbol{x}}_n$ and reconstructions $\hat{\boldsymbol{x}}_n = \boldsymbol{B}\boldsymbol{z}_n$:
    $$\min_{\boldsymbol{B}} \frac{1}{N}\sum_{n=1}^N \|\tilde{\boldsymbol{x}}_n - \boldsymbol{B}\boldsymbol{B}^\top \tilde{\boldsymbol{x}}_n\|^2 \implies \text{Error} = \sum_{j=M+1}^D \lambda_j$$
 
 Both formulations lead to the **exact same eigenvalue problem**: Choose the $M$ eigenvectors of $\boldsymbol{S}$ corresponding to the $M$ largest eigenvalues.
@@ -608,7 +616,7 @@ $$p(\boldsymbol{x}) = \sum_{k=1}^K \pi_k \mathcal{N}(\boldsymbol{x} \mid \boldsy
 - **Pathology:** Sum inside the logarithm prevents closed-form stationary equations, and singularities occur when a component's covariance collapses onto a single point ($\det(\boldsymbol{\Sigma}_k) \to 0, \log L \to \infty$).
 
 #### 2. Latent Variables & The EM Algorithm
-Introduce binary latent indicator vector $\boldsymbol{z}_n \in \{0, 1\}^K$ such that $z_{nk} = 1$ if point $n$ was generated by component $k$.
+Introduce binary latent indicator vector $\boldsymbol{z_n} \in \{0, 1\}^K$, where $z_{nk} = 1$ if sample $n$ belongs to component $k$.
 - **Expectation Step (E-step):** Evaluate posterior responsibilities $\gamma_{nk} = p(z_{nk}=1 \mid \boldsymbol{x}_n, \boldsymbol{\theta})$:
 
 $$\gamma_{nk} = \frac{\pi_k \mathcal{N}(\boldsymbol{x}_n \mid \boldsymbol{\mu}_k, \boldsymbol{\Sigma}_k)}{\sum_{j=1}^K \pi_j \mathcal{N}(\boldsymbol{x}_n \mid \boldsymbol{\mu}_j, \boldsymbol{\Sigma}_j)}$$
@@ -616,8 +624,13 @@ $$\gamma_{nk} = \frac{\pi_k \mathcal{N}(\boldsymbol{x}_n \mid \boldsymbol{\mu}_k
 - **Maximization Step (M-step):** Update parameters using weighted averages:
   - Effective cluster size: $N_k = \sum_{n=1}^N \gamma_{nk}$
   - Mixture weights: $\pi_k^{\text{new}} = \frac{N_k}{N}$
-  - Means: $\boldsymbol{\mu}_k^{\text{new}} = \frac{1}{N_k}\sum_{n=1}^N \gamma_{nk}\boldsymbol{x}_n$
-  - Covariances: $\boldsymbol{\Sigma}_k^{\text{new}} = \frac{1}{N_k}\sum_{n=1}^N \gamma_{nk}(\boldsymbol{x}_n - \boldsymbol{\mu}_k^{\text{new}})(\boldsymbol{x}_n - \boldsymbol{\mu}_k^{\text{new}})^\top$
+  - Means:
+
+$$\boldsymbol{\mu}_k^{\text{new}} = \frac{1}{N_k}\sum_{n=1}^N \gamma_{nk}\boldsymbol{x}_n$$
+
+  - Covariances:
+
+$$\boldsymbol{\Sigma}_k^{\text{new}} = \frac{1}{N_k}\sum_{n=1}^N \gamma_{nk}(\boldsymbol{x}_n - \boldsymbol{\mu}_k^{\text{new}})(\boldsymbol{x}_n - \boldsymbol{\mu}_k^{\text{new}})^\top$$
 
 #### 3. Connection to K-Means
 When covariances are constrained to spherical isotropic $\boldsymbol{\Sigma}_k = \sigma^2 \boldsymbol{I}$ and the variance limit $\sigma^2 \to 0$ is taken, responsibilities harden:
@@ -636,7 +649,7 @@ Standard K-Means is precisely the hard-assignment zero-variance limit of EM!
 > Chapter 12 develops Support Vector Machines (SVMs) as the canonical maximum-margin approach to binary classification, synthesizing hyperplane geometry, convex optimization, Lagrangian duality, and functional analysis. It formulates the hard-margin primal problem as finding the separating hyperplane that maximizes geometric margin $\frac{2}{\|\boldsymbol{w}\|}$, and derives the Lagrangian dual quadratic program, using KKT complementary slackness to prove that the optimal decision boundary depends exclusively on a sparse subset of data points sitting directly on the margin—the support vectors. The chapter extends this formulation to non-separable data via slack variables, establishing the equivalence between soft-margin SVMs and regularized Hinge loss minimization. Finally, it presents the Kernel Trick, leveraging Mercer's theorem and positive semi-definite Gram matrices to implicitly project inputs into infinite-dimensional reproducing kernel Hilbert spaces (e.g., via RBF kernels) while computing exclusively in the input space.
 
 #### 1. Hard-Margin SVM (Linearly Separable Case)
-Given binary classification data $\{(\boldsymbol{x}_n, y_n)\}_{n=1}^N$ with $y_n \in \{-1, +1\}$:
+Given binary classification dataset $\mathcal{D} = \{(\boldsymbol{x_n}, y_n)\}_{n=1}^N$ with labels $y_n \in \{-1, +1\}$:
 - **Canonical Hyperplane:** $\min_n y_n(\boldsymbol{w}^\top \boldsymbol{x}_n + b) = 1$. The margin width between classes is $\frac{2}{\|\boldsymbol{w}\|}$.
 - **Primal Quadratic Program:**
 
@@ -649,7 +662,7 @@ $$\max_{\boldsymbol{\alpha}} \sum_{n=1}^N \alpha_n - \frac{1}{2}\sum_{n=1}^N \su
 - **KKT Complementary Slackness:** $\alpha_n [y_n(\boldsymbol{w}^\top \boldsymbol{x}_n + b) - 1] = 0$.
   - Points with $\alpha_n = 0$ lie strictly outside the margin.
   - Points with $\alpha_n > 0$ lie **exactly on the margin** ($y_n(\boldsymbol{w}^\top \boldsymbol{x}_n + b) = 1$). These are the **Support Vectors**!
-- Optimal weights: $\boldsymbol{w}^* = \sum_{n \in \text{SV}} \alpha_n y_n \boldsymbol{x}_n$.
+- Optimal weights: $\boldsymbol{w}^\star = \sum_{n \in \text{SV}} \alpha_n y_n \boldsymbol{x}_n$.
 
 #### 2. Soft-Margin SVM (Non-Separable Case)
 Introduce slack variables $\xi_n \ge 0$ penalizing margin violations:
@@ -667,7 +680,7 @@ Replace inner products $\boldsymbol{x}_n^\top \boldsymbol{x}_m$ with kernel func
   - Gaussian / RBF: $k(\boldsymbol{x}, \boldsymbol{z}) = \exp(-\gamma \|\boldsymbol{x} - \boldsymbol{z}\|^2)$ (corresponds to an infinite-dimensional feature map).
 - **Non-Linear Decision Function:**
 
-$$f(\boldsymbol{x}_*) = \text{sign}\left(\sum_{n \in \text{SV}} \alpha_n y_n k(\boldsymbol{x}_n, \boldsymbol{x}_*) + b\right)$$
+$$f(\boldsymbol{x}_{\ast}) = \text{sign}\left(\sum_{n \in \text{SV}} \alpha_n y_n k(\boldsymbol{x}_n, \boldsymbol{x}_{\ast}) + b\right)$$
 
 ---
 
@@ -707,7 +720,7 @@ $$f(\boldsymbol{x}_*) = \text{sign}\left(\sum_{n \in \text{SV}} \alpha_n y_n k(\
 |:---|:---|:---|:---|:---|:---|
 | **Bernoulli** | $x \in \{0, 1\}$ | $\mu \in [0, 1]$ | $\mu$ | $\mu(1 - \mu)$ | Beta |
 | **Binomial** | $k \in \{0, \dots, N\}$ | $N \in \mathbb{N}, \mu \in [0, 1]$ | $N\mu$ | $N\mu(1 - \mu)$ | Beta |
-| **Multinomial** | $\boldsymbol{x} \in \mathbb{N}^K, \sum x_k = N$ | $\boldsymbol{\pi}, \sum \pi_k = 1$ | $N\boldsymbol{\pi}$ | $\text{Cov}_{ij} = N\pi_i(\delta_{ij} - \pi_j)$ | Dirichlet |
+| **Multinomial** | $\boldsymbol{x} \in \mathbb{N}^K, \sum x_k = N$ | $\boldsymbol{\pi}, \sum \pi_k = 1$ | $N\boldsymbol{\pi}$ | $\mathrm{Cov}(x_i, x_j) = N\pi_i(\delta_{ij} - \pi_j)$ | Dirichlet |
 | **Gaussian $\mathcal{N}(\boldsymbol{\mu}, \boldsymbol{\Sigma})$** | $\boldsymbol{x} \in \mathbb{R}^D$ | $\boldsymbol{\mu} \in \mathbb{R}^D, \boldsymbol{\Sigma} \succ 0$ | $\boldsymbol{\mu}$ | $\boldsymbol{\Sigma}$ | Gaussian (mean), Wishart (precision) |
 | **Beta** | $x \in [0, 1]$ | $\alpha > 0, \beta > 0$ | $\frac{\alpha}{\alpha + \beta}$ | $\frac{\alpha\beta}{(\alpha+\beta)^2(\alpha+\beta+1)}$ | Conjugate to Binomial/Bernoulli |
 | **Dirichlet** | $\boldsymbol{x} \in \Delta^K$ (simplex) | $\boldsymbol{\alpha} \in \mathbb{R}_{>0}^K$ | $\frac{\alpha_k}{\sum \alpha_j}$ | $\frac{\tilde{\alpha}_k(1-\tilde{\alpha}_k)}{\alpha_0 + 1}$ | Conjugate to Multinomial/Categorical |
