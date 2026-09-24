@@ -51,6 +51,50 @@ The book is partitioned into two complementary halves:
 - **Part I (Chapters 2–7):** The fundamental mathematical toolbox spanning linear algebra, analytic geometry, matrix factorizations, vector calculus, probability theory, and continuous optimization.
 - **Part II (Chapters 8–12):** The four canonical machine learning problem archetypes (regression, dimensionality reduction, density estimation, and classification) formulated entirely using the tools built in Part I.
 
+```mermaid
+flowchart TD
+    %% PART I: Foundational Pillars
+    subgraph Part1["🏛️ PART I: MATHEMATICAL FOUNDATIONS"]
+        subgraph Group1["Linear Algebra & Geometry"]
+            Ch2["<b>Ch 2: Linear Algebra</b><br/>Vectors, Spaces, Systems"]
+            Ch3["<b>Ch 3: Analytic Geometry</b><br/>Norms, Projections, Angles"]
+            Ch4["<b>Ch 4: Matrix Decompositions</b><br/>SVD, Eigendecomp, Cholesky"]
+        end
+
+        subgraph Group2["Calculus, Probability & Optimization"]
+            Ch5["<b>Ch 5: Vector Calculus</b><br/>Gradients, Jacobians, Backprop"]
+            Ch6["<b>Ch 6: Probability & Distributions</b><br/>Bayes, Gaussians, Conjugacy"]
+            Ch7["<b>Ch 7: Continuous Optimization</b><br/>Gradient Descent, KKT, Duality"]
+        end
+
+        Ch2 --> Ch3
+        Ch2 --> Ch4
+        Ch2 --> Ch5
+        Ch3 --> Ch6
+        Ch4 --> Ch7
+    end
+
+    %% TIER 2: Gateway
+    Ch8["<b>Ch 8: When Models Meet Data</b><br/>Empirical Risk, MLE / MAP, Bias-Variance Tradeoff"]
+
+    %% TIER 3: Part II ML Algorithms
+    subgraph Part2["🚀 PART II: CENTRAL MACHINE LEARNING ALGORITHMS"]
+        Ch9["<b>Ch 9: Linear Regression</b><br/>Least Squares &bull; Bayesian Regression"]
+        Ch10["<b>Ch 10: Dimensionality Reduction (PCA)</b><br/>Projected Variance &bull; SVD &bull; PPCA"]
+        Ch11["<b>Ch 11: Density Estimation (GMM)</b><br/>Latent Variables &bull; EM Algorithm &bull; K-Means Limit"]
+        Ch12["<b>Ch 12: Classification (SVM)</b><br/>Max-Margin Hyperplane &bull; Dual QP &bull; Kernel Trick"]
+    end
+
+    Part1 ==> Ch8
+    Ch8 --> Ch9
+    Ch8 --> Ch10
+    Ch8 --> Ch11
+    Ch8 --> Ch12
+```
+
+<details>
+<summary>📋 <b>Click to expand Text-based ASCII Roadmap</b></summary>
+
 ```text
 +----------------------------------------------------------------------------------------------------+
 |                                  PART I: MATHEMATICAL FOUNDATIONS                                  |
@@ -78,6 +122,8 @@ The book is partitioned into two complementary halves:
 |                                                                                                    |
 +----------------------------------------------------------------------------------------------------+
 ```
+
+</details>
 
 ### Foundations-to-Algorithms Dependency Matrix
 
