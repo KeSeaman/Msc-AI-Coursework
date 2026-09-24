@@ -51,28 +51,32 @@ The book is partitioned into two complementary halves:
 - **Part I (Chapters 2–7):** The fundamental mathematical toolbox spanning linear algebra, analytic geometry, matrix factorizations, vector calculus, probability theory, and continuous optimization.
 - **Part II (Chapters 8–12):** The four canonical machine learning problem archetypes (regression, dimensionality reduction, density estimation, and classification) formulated entirely using the tools built in Part I.
 
-```
-+-----------------------------------------------------------------------------------+
-|                           PART I: MATHEMATICAL FOUNDATIONS                         |
-|                                                                                   |
-|  [Ch 2: Linear Algebra]        [Ch 3: Analytic Geometry]    [Ch 4: Decompositions]|
-|   Vectors, Spaces, Systems      Norms, Projections, Orthog.  SVD, Eigendecomp, S  |
-|               \                         |                        /                |
-|                \                        |                       /                 |
-|  [Ch 5: Vector Calculus]       [Ch 6: Probability & Stats]  [Ch 7: Optimization]  |
-|   Gradients, Jacobians, Hess    Bayes, Gaussians, Conjugacy  Lagrangians, KKT, QP |
-+-----------------------------------------------------------------------------------+
-                                      |
-                                      v
-+-----------------------------------------------------------------------------------+
-|                         PART II: CENTRAL ML ALGORITHMS                            |
-|                                                                                   |
-|  [Ch 8: Models & Data]   ---> Foundational Framework (ERM, MLE/MAP, Bias-Variance)|
-|  [Ch 9: Regression]      <--- Ch 2, 3 (Proj), 5 (Deriv), 6 (Bayesian Prior)       |
-|  [Ch 10: PCA]            <--- Ch 3 (Orthog), 4 (SVD/Spectral), 7 (Lagrangian Var) |
-|  [Ch 11: GMM]            <--- Ch 6 (Multivariate Gauss), 7 (Jensen's ELBO Ascent) |
-|  [Ch 12: SVM]            <--- Ch 3 (Margin Hyperplane), 7 (Dual QP, KKT, Mercer)  |
-+-----------------------------------------------------------------------------------+
+```text
++----------------------------------------------------------------------------------------------------+
+|                                  PART I: MATHEMATICAL FOUNDATIONS                                  |
+|                                                                                                    |
+|       [Ch 2: Linear Algebra]        [Ch 3: Analytic Geometry]         [Ch 4: Decompositions]       |
+|      Vectors, Spaces, Systems      Norms, Projections, Orthog.      SVD, Eigendecomp, Low-Rank     |
+|                                                                                                    |
+|                 |                               |                               |                  |
+|                 v                               v                               v                  |
+|                                                                                                    |
+|      [Ch 5: Vector Calculus]       [Ch 6: Probability & Stats]         [Ch 7: Optimization]        |
+|     Gradients, Jacobians, Hess     Bayes, Gaussians, Conjugacy      Lagrangians, KKT, Duality      |
+|                                                                                                    |
++----------------------------------------------------------------------------------------------------+
+                                                  |
+                                                  v
++----------------------------------------------------------------------------------------------------+
+|                                   PART II: CENTRAL ML ALGORITHMS                                   |
+|                                                                                                    |
+|     [Ch 8: Models & Data]     --->   Foundational Framework (ERM, MLE/MAP, Bias-Variance)          |
+|     [Ch 9: Regression]        <---   Ch 2 (Linear), Ch 3 (Proj), Ch 5 (Deriv), Ch 6 (Prior)        |
+|     [Ch 10: PCA]              <---   Ch 3 (Orthog), Ch 4 (SVD/Spectral), Ch 7 (Lagrangian)         |
+|     [Ch 11: GMM]              <---   Ch 6 (Multivariate Gauss), Ch 7 (Jensen ELBO Ascent)          |
+|     [Ch 12: SVM]              <---   Ch 3 (Margin Hyperplane), Ch 7 (Dual QP, KKT, Mercer)         |
+|                                                                                                    |
++----------------------------------------------------------------------------------------------------+
 ```
 
 ### Foundations-to-Algorithms Dependency Matrix
